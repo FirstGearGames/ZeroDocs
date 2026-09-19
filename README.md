@@ -1,15 +1,21 @@
 # ZeroDocs
 
-**Free, MIT-licensed, zero-dependency, fully offline** documentation-site
-software. Point it at a folder of Markdown, a JSON config, and a static-assets
-directory and it serves a complete GitBook-style documentation site: sidebar
-navigation, full-text section search, dark/light mode, versioning, syntax
-highlighting, callouts, cards, tabs, live reload, and more.
+**Free, MIT-licensed, feature-rich** documentation-site software. Point it at a
+folder of Markdown, a JSON config, and a static-assets directory and it serves a
+complete GitBook-style site: sidebar navigation, full-text section search,
+dark/light mode, versioning, syntax highlighting, callouts, cards, tabs, badges,
+steps, video embeds, live reload, and more.
 
-There is **no build step and no `npm install`** to run it, only Node.js
-built-ins (Node 18+), and the pages it serves make **zero external requests**:
-no CDN scripts, no web fonts. It works on a plane, and it hosts for free on
-Cloudflare Pages.
+**Host it online for free, with GitHub editing.** Keep your docs in a public
+GitHub repo, connect it to Cloudflare Pages, and every merged pull request
+redeploys the site automatically. Each page gets an "Edit this page on GitHub"
+link, so anyone can propose a change without cloning anything. See
+[Hosting on Cloudflare Pages](#hosting-on-cloudflare-pages-with-github-editing).
+
+**Or run it entirely offline.** Because it has **zero dependencies** (Node.js
+built-ins only, no `npm install`) and the pages make **zero external requests**
+(no CDN scripts, no web fonts), the same software also runs as a local preview
+server or builds a fully self-contained static site. It works on a plane.
 
 Docs are free. Use it for anything, no strings ([MIT](LICENSE)).
 
