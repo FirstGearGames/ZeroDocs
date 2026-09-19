@@ -249,7 +249,7 @@ A row of bordered "pill" links, a lighter alternative to buttons.
 :::linkbuttons
 [Discord](https://example.com/discord)
 [Changelog](/docs/v1)
-[API reference](/docs/v1/manuals/engine)
+[API reference](/docs/v1/authoring/navigation-and-theming)
 :::
 ```
 
@@ -258,7 +258,7 @@ A row of bordered "pill" links, a lighter alternative to buttons.
 :::linkbuttons
 [Discord](https://example.com/discord)
 [Changelog](/docs/v1)
-[API reference](/docs/v1/manuals/engine)
+[API reference](/docs/v1/authoring/navigation-and-theming)
 :::
 
 Next: [Tabs & Media](./tabs-and-media.md).

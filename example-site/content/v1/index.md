@@ -3,7 +3,7 @@ title: "ZeroDocs Demo"
 description: "A live example of everything the engine renders from plain Markdown."
 ---
 
-# ZeroDocs, Demo
+# ZeroDocs Demo
 
 This is a live example site served by **ZeroDocs**. It reads Markdown files from a `content/` folder and generates a fully-featured documentation portal, similar to Docker Docs and GitBook. Every feature below is rendered by the engine from the Markdown in this folder.
 
@@ -18,7 +18,7 @@ Every feature the engine supports, callouts, cards, tabs, code, and more, each s
 - **File-system routing**, Folder structure automatically becomes your sidebar navigation
 - **Syntax highlighting**, Code blocks with language detection and copy button
 - **Full-text search**, Press `Cmd+K` (or `Ctrl+K`) to open the search modal
-- **Versioning**, Switch between versions with the selector in the header
+- **Versioning**, Publish multiple doc versions side by side when you need them (this demo ships one)
 - **Dark/Light mode**, Toggle theme with persistent preferences
 - **Mobile-friendly**, Hamburger sidebar on small screens
 - **Table of contents**, Auto-generated right sidebar with heading navigation
@@ -140,7 +140,7 @@ Inline buttons use the `[Text]{.btn ...}` syntax anywhere in your prose.
 
 ### Basic Buttons
 
-[Get Started]{.btn bg="#2563eb" color="#fff" href="/docs/v1/get-started/installation"}  [View on GitHub]{.btn bg="#24292f" color="#fff" href="https://github.com" border="true"}  [Learn More]{.btn bg="transparent" color="#2563eb" border="#2563eb"}
+[Get Started]{.btn bg="#2563eb" color="#fff" href="/docs/v1/authoring"}  [View on GitHub]{.btn bg="#24292f" color="#fff" href="https://github.com" border="true"}  [Learn More]{.btn bg="transparent" color="#2563eb" border="#2563eb"}
 
 ### Colored Buttons
 
