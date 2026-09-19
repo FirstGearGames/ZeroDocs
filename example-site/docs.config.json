@@ -3,7 +3,7 @@
   "description": "A live example site showing what ZeroDocs renders from plain Markdown.",
   "logo": "",
 
-  "versions": ["v1", "v2"],
+  "versions": ["v1"],
   "defaultVersion": "v1",
 
   "_comment": "No github block on purpose: this demo ships inside the software repo and is not user-editable content, so it shows no 'Edit this page on GitHub' link. A real site adds a github block pointing at its own content repo (see docs.config.example.json).",
