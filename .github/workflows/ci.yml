@@ -1,0 +1,23 @@
+name: CI
+
+# The sanity gate: every push and pull request must keep the renderer safe and
+# buildable before it can be merged. Zero dependencies, so this is fast.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Security regression suite
+        run: node test/security-test.js
+      - name: Static build (example site)
+        run: node build-static.js ./example-site
+      - name: Content tripwire (advisory)
+        run: node scripts/content-scan.js ./example-site

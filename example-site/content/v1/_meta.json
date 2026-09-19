@@ -1,0 +1,11 @@
+[
+  { "type": "separator", "title": "Overview" },
+  { "slug": "index", "title": "Welcome" },
+  { "type": "separator", "title": "Component Showcase" },
+  { "slug": "authoring", "title": "Authoring Guide", "type": "folder", "defaultOpen": true, "tag": "Live" },
+  { "type": "separator", "title": "Getting Started" },
+  { "slug": "get-started", "title": "Get Started", "type": "folder" },
+  { "type": "separator", "title": "Documentation" },
+  { "slug": "guides", "title": "Guides", "type": "folder", "tag": "New" },
+  { "slug": "manuals", "title": "Manuals", "type": "folder", "tag": "Beta" }
+]

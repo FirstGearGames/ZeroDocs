@@ -1,0 +1,43 @@
+{
+  "title": "ZeroDocs Demo",
+  "description": "A live example site showing what ZeroDocs renders from plain Markdown.",
+  "logo": "",
+
+  "versions": ["v1", "v2"],
+  "defaultVersion": "v1",
+
+  "github": {
+    "repo": "",
+    "branch": "main",
+    "contentDir": "content"
+  },
+
+  "nav": [
+    { "label": "Authoring Guide", "href": "/docs/v1/authoring" }
+  ],
+
+  "announcement": {
+    "text": "This announcement bar is config-driven, and dismissible. →",
+    "href": "/docs/v1/authoring/navigation-and-theming",
+    "dismissible": true
+  },
+
+  "footer": {
+    "text": "Built with ZeroDocs, zero dependencies, fully offline.",
+    "links": [
+      { "label": "Authoring Guide", "href": "/docs/v1/authoring" },
+      { "label": "Components", "href": "/docs/v1/authoring/components" }
+    ]
+  },
+
+  "theme": {
+    "primary": "#2563eb",
+    "primaryDark": "#7db8f7",
+    "success": "#22c55e",
+    "info": "#3b82f6",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "sidebar": "#f3f4f6",
+    "sidebarDark": "#1e2028"
+  }
+}

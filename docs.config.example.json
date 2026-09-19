@@ -1,0 +1,30 @@
+{
+  "title": "My Docs",
+  "description": "Documentation built with ZeroDocs.",
+  "logo": "",
+
+  "versions": ["v1"],
+  "defaultVersion": "v1",
+
+  "github": {
+    "repo": "https://github.com/your-org/your-repo",
+    "branch": "main",
+    "contentDir": "content"
+  },
+
+  "nav": [
+    { "label": "Discord", "href": "https://example.com/discord" },
+    { "label": "GitHub", "href": "https://github.com/your-org/your-repo" }
+  ],
+
+  "theme": {
+    "_comment": "Every callout, link, and accent colour derives from these values. Delete this block to use the defaults.",
+    "primary": "#2563eb",
+    "success": "#22c55e",
+    "info": "#3b82f6",
+    "warning": "#f59e0b",
+    "danger": "#ef4444",
+    "sidebar": "#f3f4f6",
+    "sidebarDark": "#1e2028"
+  }
+}

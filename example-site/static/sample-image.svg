@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="Sample image">
+  <rect width="640" height="400" fill="#0f172a"/>
+  <circle cx="320" cy="175" r="72" fill="#38bdf8"/>
+  <circle cx="320" cy="175" r="72" fill="none" stroke="#0ea5e9" stroke-width="4"/>
+  <rect x="170" y="285" width="300" height="20" rx="10" fill="#334155"/>
+  <rect x="230" y="320" width="180" height="14" rx="7" fill="#334155"/>
+  <text x="320" y="70" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="26" font-weight="700" fill="#e2e8f0">Sample Image</text>
+</svg>

@@ -1,0 +1,10 @@
+#!/bin/sh
+# ZeroDocs pre-commit gate: never commit an engine change that weakens the
+# security guarantees. Enable once per clone with:
+#   git config core.hooksPath .githooks
+node test/security-test.js || {
+  echo ""
+  echo "  ✖ Security suite failed, commit blocked."
+  echo "    Fix the finding(s) above (or, if intentional, update test/security-test.js)."
+  exit 1
+}

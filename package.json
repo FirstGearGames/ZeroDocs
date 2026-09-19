@@ -1,0 +1,21 @@
+{
+  "name": "zerodocs",
+  "version": "2.0.0",
+  "description": "Free, MIT-licensed, zero-dependency, fully offline Markdown documentation software. Point it at a site folder (content/ + docs.config.json + static/); the software is never edited. Hosts free on Cloudflare Pages.",
+  "bin": {
+    "zerodocs": "preview-server.js"
+  },
+  "main": "preview-server.js",
+  "scripts": {
+    "start": "node preview-server.js",
+    "example": "node preview-server.js ./example-site",
+    "build": "node build-static.js",
+    "build:example": "node build-static.js ./example-site",
+    "test": "node test/security-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "private": false
+}

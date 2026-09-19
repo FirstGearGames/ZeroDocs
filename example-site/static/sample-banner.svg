@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Sample banner">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#g)"/>
+  <circle cx="1040" cy="150" r="180" fill="#ffffff" opacity="0.08"/>
+  <circle cx="1120" cy="60" r="90" fill="#ffffff" opacity="0.08"/>
+  <text x="64" y="160" font-family="-apple-system,Segoe UI,sans-serif" font-size="54" font-weight="800" fill="#ffffff">Sample Banner</text>
+  <text x="66" y="205" font-family="-apple-system,Segoe UI,sans-serif" font-size="23" fill="#dbeafe">A full-width image rendered above the page title</text>
+</svg>

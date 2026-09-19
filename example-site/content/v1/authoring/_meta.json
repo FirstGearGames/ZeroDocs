@@ -1,0 +1,11 @@
+[
+  { "slug": "index", "title": "Overview" },
+  { "slug": "markdown-basics", "title": "Markdown Basics" },
+  { "slug": "code", "title": "Code Blocks" },
+  { "slug": "callouts", "title": "Callouts" },
+  { "slug": "images", "title": "Images", "tag": "New" },
+  { "slug": "cards-and-buttons", "title": "Cards & Buttons" },
+  { "slug": "components", "title": "Components", "tag": "New" },
+  { "slug": "tabs-and-media", "title": "Tabs & Media" },
+  { "slug": "navigation-and-theming", "title": "Navigation & Theming" }
+]
