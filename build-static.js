@@ -52,6 +52,11 @@ function build() {
   const config = site.loadConfig();
   const versions = site.versions(config);
   const outDir = path.resolve(process.env.DOCS_OUT || path.join(site.root, 'out'));
+  // Sub-path the site is served under (e.g. '/ZeroDocs' on a GitHub Pages
+  // project site). Empty for a domain root (Cloudflare Pages, custom domain).
+  let basePath = process.env.DOCS_BASE || '';
+  if (basePath && !basePath.startsWith('/')) basePath = '/' + basePath;
+  basePath = basePath.replace(/\/$/, '');
 
   if (!fs.existsSync(site.contentDir)) {
     console.error(`  ✖ No content/ folder under ${site.root}. Set DOCS_ROOT to your site.`);
@@ -71,7 +76,7 @@ function build() {
   else write(path.join(outDir, 'favicon.svg'), renderFavicon(config));
 
   // ── Per-version data + pre-rendered pages ─────────────────────────────────
-  const shell = (page) => renderShell({ config, versions, page, assetsVer: ASSETS_VER, staticMode: true });
+  const shell = (page) => renderShell({ config, versions, page, assetsVer: ASSETS_VER, staticMode: true, basePath });
   let pageCount = 0;
 
   write(path.join(outDir, 'data', 'config.json'), JSON.stringify(config));
@@ -107,7 +112,7 @@ function build() {
 
   // ── Root + SPA fallback pages ─────────────────────────────────────────────
   const defaultVersion = site.defaultVersion(config);
-  const rootRedirect = `/docs/${defaultVersion}`;
+  const rootRedirect = `${basePath}/docs/${defaultVersion}`;
   write(path.join(outDir, 'index.html'),
     `<!doctype html><meta charset="utf-8"><title>${escapeHtml(config.title || 'Docs')}</title>`
     + `<meta http-equiv="refresh" content="0; url=${rootRedirect}">`
@@ -117,17 +122,21 @@ function build() {
   // then shows its own styled 404); Cloudflare serves 404.html on a miss.
   write(path.join(outDir, '404.html'), shell(null));
 
+  // GitHub Pages must not run Jekyll over the artifact (it would skip _-files).
+  write(path.join(outDir, '.nojekyll'), '');
+
   // ── Crawler files ─────────────────────────────────────────────────────────
-  writeCrawlerFiles(site, config, versions, outDir);
+  writeCrawlerFiles(site, config, versions, outDir, basePath);
 
   // ── Cloudflare _headers / _redirects ──────────────────────────────────────
   writeHeaders(outDir);
-  writeRedirects(config, rootRedirect, outDir);
+  writeRedirects(config, rootRedirect, outDir, basePath);
 
   console.log('');
   console.log(`  ✓ ZeroDocs static build`);
   console.log(`  → Site:     ${site.root}`);
   console.log(`  → Output:   ${outDir}`);
+  console.log(`  → Base:     ${basePath || '(root)'}`);
   console.log(`  → Versions: ${versions.join(', ')}`);
   console.log(`  → Pages:    ${pageCount}`);
   console.log('');
@@ -138,19 +147,20 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/** sitemap.xml, robots.txt, llms.txt, llms-full.txt (relative URLs; host-agnostic). */
-function writeCrawlerFiles(site, config, versions, outDir) {
+/** sitemap.xml, robots.txt, llms.txt, llms-full.txt (relative URLs, base-prefixed). */
+function writeCrawlerFiles(site, config, versions, outDir, basePath) {
+  const b = basePath || '';
   const urls = [];
   for (const v of versions) {
-    urls.push(`  <url><loc>/docs/${v}</loc></url>`);
+    urls.push(`  <url><loc>${b}/docs/${v}</loc></url>`);
     for (const p of contentLib.listPages(site, v)) {
       if (p.href === `/docs/${v}`) continue;
-      urls.push(`  <url><loc>${escapeHtml(p.href)}</loc><lastmod>${p.mtime.toISOString().slice(0, 10)}</lastmod></url>`);
+      urls.push(`  <url><loc>${escapeHtml(b + p.href)}</loc><lastmod>${p.mtime.toISOString().slice(0, 10)}</lastmod></url>`);
     }
   }
   write(path.join(outDir, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>`);
-  write(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n`);
+  write(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${b}/sitemap.xml\n`);
 
   for (const kind of ['llms.txt', 'llms-full.txt']) {
     const full = kind === 'llms-full.txt';
@@ -159,8 +169,8 @@ function writeCrawlerFiles(site, config, versions, outDir) {
     for (const v of versions) {
       lines.push(`## ${v}`, '');
       for (const p of contentLib.listPages(site, v)) {
-        if (full) lines.push('---', '', `# ${p.title}`, `URL: ${p.href}`, '', p.content.trim(), '');
-        else lines.push(`- [${p.title}](${p.href})${p.description ? `: ${p.description}` : ''}`);
+        if (full) lines.push('---', '', `# ${p.title}`, `URL: ${b}${p.href}`, '', p.content.trim(), '');
+        else lines.push(`- [${p.title}](${b}${p.href})${p.description ? `: ${p.description}` : ''}`);
       }
       lines.push('');
     }
@@ -194,14 +204,15 @@ function writeHeaders(outDir) {
 }
 
 /** Cloudflare _redirects: root → default version, plus config.redirects. */
-function writeRedirects(config, rootRedirect, outDir) {
-  const lines = [`/    ${rootRedirect}    302`];
+function writeRedirects(config, rootRedirect, outDir, basePath) {
+  const b = basePath || '';
+  const lines = [`${b || '/'}    ${rootRedirect}    302`];
   if (config.redirects && typeof config.redirects === 'object') {
     for (const [from, to] of Object.entries(config.redirects)) {
       const target = String(to);
       // Same-origin only (mirrors the server's open-redirect guard).
       if (from.startsWith('/') && target.startsWith('/') && !target.startsWith('//') && !target.startsWith('/\\')) {
-        lines.push(`${from}    ${target}    301`);
+        lines.push(`${b}${from}    ${b}${target}    301`);
       }
     }
   }

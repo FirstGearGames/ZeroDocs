@@ -17,6 +17,11 @@ built-ins only, no `npm install`) and the pages make **zero external requests**
 (no CDN scripts, no web fonts), the same software also runs as a local preview
 server or builds a fully self-contained static site. It works on a plane.
 
+**See it live:** [`example-site/`](example-site/) is the **Authoring Guide**, a
+page-by-page tour of every feature with source and rendered output side by side.
+It publishes to GitHub Pages on every push (see
+[Live demo on GitHub Pages](#live-demo-on-github-pages)).
+
 Docs are free. Use it for anything, no strings ([MIT](LICENSE)).
 
 ## The core idea: never touch the source
@@ -141,6 +146,23 @@ a contributor can propose a change without cloning anything.
 > cookies for its whole domain (e.g. `docs.example.com` when `example.com`
 > shares auth cookies across subdomains), a bad edit would sit inside that
 > site's auth blast radius. Use a `*.pages.dev` URL or a dedicated domain.
+
+## Live demo on GitHub Pages
+
+This repo publishes its own `example-site` (the Authoring Guide) to GitHub Pages
+via [`.github/workflows/pages.yml`](.github/workflows/pages.yml), so the live
+demo always reflects the latest engine. To do the same for any site:
+
+- Build with `DOCS_BASE` set to the sub-path the site is served under. A GitHub
+  Pages **project** site lives at `https://<user>.github.io/<repo>/`, so
+  `DOCS_BASE=/<repo>` (the included workflow uses the repo name automatically).
+  A user/organization site or a custom domain serves at the root, so leave
+  `DOCS_BASE` unset. The static server and Cloudflare Pages also serve at the
+  root; `DOCS_BASE` is only for a sub-path.
+- One-time: repo **Settings > Pages > Source: GitHub Actions**. Pages is free
+  once the repo is public.
+
+The generator writes `.nojekyll` so Pages serves the output verbatim.
 
 ## Features
 

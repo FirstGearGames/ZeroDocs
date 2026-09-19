@@ -1,0 +1,52 @@
+name: Live demo (GitHub Pages)
+
+# Builds example-site (the interactive Authoring Guide) and publishes it to
+# GitHub Pages on every push to main, so the live demo always reflects the
+# latest engine. DOCS_BASE is the repo name because a project site is served
+# under https://<user>.github.io/<repo>/.
+#
+# One-time setup: repo Settings > Pages > Build and deployment > Source:
+# "GitHub Actions". Pages is free once the repo is public.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Security regression suite
+        run: node test/security-test.js
+      - name: Build the live demo (example-site) under the project sub-path
+        run: node build-static.js ./example-site
+        env:
+          DOCS_OUT: ${{ github.workspace }}/_site
+          DOCS_BASE: /${{ github.event.repository.name }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -6,11 +6,7 @@
   "versions": ["v1", "v2"],
   "defaultVersion": "v1",
 
-  "github": {
-    "repo": "",
-    "branch": "main",
-    "contentDir": "content"
-  },
+  "_comment": "No github block on purpose: this demo ships inside the software repo and is not user-editable content, so it shows no 'Edit this page on GitHub' link. A real site adds a github block pointing at its own content repo (see docs.config.example.json).",
 
   "nav": [
     { "label": "Authoring Guide", "href": "/docs/v1/authoring" }
