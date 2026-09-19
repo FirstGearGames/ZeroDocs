@@ -17,10 +17,10 @@ built-ins only, no `npm install`) and the pages make **zero external requests**
 (no CDN scripts, no web fonts), the same software also runs as a local preview
 server or builds a fully self-contained static site. It works on a plane.
 
-**See it live:** [`example-site/`](example-site/) is the **Authoring Guide**, a
-page-by-page tour of every feature with source and rendered output side by side.
-It publishes to GitHub Pages on every push (see
-[Live demo on GitHub Pages](#live-demo-on-github-pages)).
+**See it live: https://firstgeargames.github.io/ZeroDocs/** is the **Authoring
+Guide**, a page-by-page tour of every feature with source and rendered output
+side by side. Its source is [`example-site/`](example-site/), and it redeploys
+on every push (see [Live demo on GitHub Pages](#live-demo-on-github-pages)).
 
 Docs are free. Use it for anything, no strings ([MIT](LICENSE)).
 
@@ -149,9 +149,10 @@ a contributor can propose a change without cloning anything.
 
 ## Live demo on GitHub Pages
 
-This repo publishes its own `example-site` (the Authoring Guide) to GitHub Pages
-via [`.github/workflows/pages.yml`](.github/workflows/pages.yml), so the live
-demo always reflects the latest engine. To do the same for any site:
+**This repo's demo is live at https://firstgeargames.github.io/ZeroDocs/.** It
+publishes its own `example-site` (the Authoring Guide) to GitHub Pages via
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml), so the live demo
+always reflects the latest engine. To do the same for any site:
 
 - Build with `DOCS_BASE` set to the sub-path the site is served under. A GitHub
   Pages **project** site lives at `https://<user>.github.io/<repo>/`, so

@@ -1,5 +1,5 @@
 ---
-title: "ZeroDocs, Demo"
+title: "ZeroDocs Demo"
 description: "A live example of everything the engine renders from plain Markdown."
 ---
 
