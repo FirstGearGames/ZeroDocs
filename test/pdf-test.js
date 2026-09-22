@@ -221,6 +221,10 @@ async function main() {
     for (let i = 0; i < 3; i++) {
       fs.writeFileSync(path.join(dir, 'content', 'v1', `page${i}.md`), `# Page ${i}\n\nBody text for page ${i}.\n`);
     }
+    // a folder with two pages, to exercise outline nesting
+    fs.mkdirSync(path.join(dir, 'content', 'v1', 'guides'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'content', 'v1', 'guides', 'index.md'), '---\ntitle: "Guides"\n---\n# Guides\n');
+    fs.writeFileSync(path.join(dir, 'content', 'v1', 'guides', 'setup.md'), '---\ntitle: "Setup"\n---\n# Setup\n');
     fs.writeFileSync(path.join(dir, 'docs.config.json'), JSON.stringify({ title: 'Test Docs', versions: ['v1'], defaultVersion: 'v1' }));
 
     const site = createSite(dir);
@@ -238,6 +242,14 @@ async function main() {
     ok('javascript: href never reaches a Link annotation', !text.includes('/URI (javascript'));
     // The legitimate https link should.
     ok('https link becomes a Link annotation', text.includes('/URI (https://example.com)'));
+
+    // Outline (bookmarks): a real /Outlines tree, the reader opens it by
+    // default, and the "guides" folder becomes one collapsed parent bookmark
+    // over its two pages rather than two loose top-level entries.
+    ok('Catalog references an Outlines tree opened by default', /\/Outlines \d+ 0 R/.test(text) && text.includes('/PageMode /UseOutlines'));
+    ok('has a Guides folder bookmark and a Setup leaf bookmark', text.includes('/Title (Guides)') && text.includes('/Title (Setup)'));
+    ok('a bookmark with children is collapsed by default (negative /Count)', /\/Count -\d+/.test(text));
+    ok('every bookmark points at a real page object', (text.match(/\/Dest \[(\d+) 0 R \/Fit\]/g) || []).length >= 6);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
