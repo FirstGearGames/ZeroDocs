@@ -11,7 +11,9 @@
     "example": "node preview-server.js ./example-site",
     "build": "node build-static.js",
     "build:example": "node build-static.js ./example-site",
-    "test": "node test/security-test.js"
+    "build:pdf": "node build-pdf.js",
+    "build:pdf:example": "node build-pdf.js ./example-site",
+    "test": "node test/security-test.js && node test/pdf-test.js"
   },
   "engines": {
     "node": ">=18"
