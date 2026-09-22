@@ -534,6 +534,8 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 
 /* ── Page footer: edit link, prev/next ───────────────────────────────────── */
 #pagefoot { margin-top: 32px; }
+.edit-top { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+.edit-top:empty { display: none; }
 .edit-row { display: flex; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
 .edit-link, .copy-page {
   display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; color: var(--muted);
@@ -666,7 +668,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 
 /* ── Print ───────────────────────────────────────────────────────────────── */
 @media print {
-  header, #sidebar, #sovl, #toc, #pn, #editwrap, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor { display: none !important; }
+  header, #sidebar, #sovl, #toc, #pn, #editwrap, #edittop, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor { display: none !important; }
   #cwrap { padding: 0; }
   #cinner { max-width: 100%; }
   body { background: #fff; color: #000; }
