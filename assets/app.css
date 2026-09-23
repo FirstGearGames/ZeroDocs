@@ -538,6 +538,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 .edit-top { display: flex; justify-content: flex-end; margin: 0 0 10px; }
 .edit-top:empty { display: none; }
 .edit-row { display: flex; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.last-updated { margin-left: auto; font-size: .8rem; color: var(--muted); }
 .edit-link, .copy-page {
   display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; color: var(--muted);
   background: none; border: none; cursor: pointer; padding: 0;
@@ -624,7 +625,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 @media (max-width: 900px) {
   #hbg { display: flex; }
   .top-nav { display: none; }
-  .side-links:not(:empty) { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  #sidebar .side-links:not(:empty) { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
   .side-links a { font-size: .9rem; color: var(--muted); }
   #sidebar {
     position: fixed; top: 56px; left: 0; height: calc(100vh - 56px); z-index: 95;
