@@ -59,6 +59,18 @@ ok('vimeo embeds to known origin', renderVideo('https://vimeo.com/12345').includ
 // ── XSS: theme colors cannot break out of <style> ───────────────────────────
 ok('themeVars no style breakout', (t => !t.includes('</style>') && !t.includes('<script>'))(themeVars({ primary: 'red}</style><script>alert(1)</script>' })));
 ok('themeVars keeps valid hex', themeVars({ primary: '#abc123' }).includes('#abc123'));
+
+// Dark-mode link legibility: a primary chosen for a white page must not be
+// emitted verbatim as dark-mode link text (the #2563eb default is 3.6:1 on
+// the dark background, below AA), but the accent FILL keeps the exact hue.
+const darkBlock = t => t.slice(t.indexOf('html.dark'));
+const darkVar = (t, name) => (new RegExp(`--${name}:([^;]+);`).exec(darkBlock(t)) || [])[1];
+ok('dark link lightened off an unreadable light primary', (() => {
+  const t = themeVars({ primary: '#2563eb' });
+  return darkVar(t, 'link') !== '#2563eb' && darkVar(t, 'act-bg') === '#2563eb';
+})());
+ok('an already-legible primaryDark is left untouched', darkVar(themeVars({ primary: '#2563eb', primaryDark: '#7db8f7' }), 'link') === '#7db8f7');
+ok('a non-hex color is passed through, never mangled to black', darkVar(themeVars({ primary: 'rebeccapurple' }), 'link') === 'rebeccapurple');
 ok('shell escapes site title', !renderShell({ config: { title: '</title><script>alert(1)</script>' }, versions: ['v1'], page: null, assetsVer: '1' }).includes('<script>alert(1)</script>'));
 
 // ── XSS: raw HTML passthrough is scrubbed ───────────────────────────────────
