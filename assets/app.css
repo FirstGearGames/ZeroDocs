@@ -85,6 +85,7 @@ header {
 }
 .logo-img { width: 30px; height: 30px; border-radius: 7px; object-fit: contain; flex-shrink: 0; }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
+.side-links { display: none; }
 .top-nav a { font-size: .875rem; color: var(--muted); white-space: nowrap; }
 .top-nav a:hover { color: var(--link); text-decoration: none; }
 .hright { margin-left: auto; display: flex; align-items: center; gap: 6px; }
@@ -623,6 +624,8 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 @media (max-width: 900px) {
   #hbg { display: flex; }
   .top-nav { display: none; }
+  .side-links:not(:empty) { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .side-links a { font-size: .9rem; color: var(--muted); }
   #sidebar {
     position: fixed; top: 56px; left: 0; height: calc(100vh - 56px); z-index: 95;
     transform: translateX(-100%); transition: transform .22s ease;
