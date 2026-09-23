@@ -18,7 +18,7 @@ const path = require('path');
 const zlib = require('zlib');
 const dns = require('dns');
 const LIB = path.join(__dirname, '..', 'lib');
-const { renderVersionPdf, parseBlocks, wrapTokens, tokenize, textWidth, pdfEscape } = require(LIB + '/pdf');
+const { renderVersionPdf, internalSlug, parseBlocks, wrapTokens, tokenize, textWidth, pdfEscape } = require(LIB + '/pdf');
 const { embedPng, embedJpeg, embedImageBytes, isPrivateAddress, safeLookup } = require(LIB + '/pdf-images');
 const { createSite } = require(LIB + '/site');
 const contentLib = require(LIB + '/content');
@@ -209,6 +209,18 @@ ok('safeLookup honors options.all (array) vs. single-address callback shapes', (
   return sawArray && sawSingle;
 })());
 
+// ── Internal link resolution: every href shape the corpus actually uses ─────
+ok('internalSlug resolves relative, root-relative, anchor and nowhere links', (() => {
+  const slugs = new Set(['', 'core-api', 'core-api/state', 'core-api/state/members', 'unity']);
+  const r = (url, base) => internalSlug(url, base, slugs);
+  return r('./state/index.md', 'core-api') === 'core-api/state'
+    && r('members.md', 'core-api/state') === 'core-api/state/members'
+    && r('../unity', 'core-api/state') === 'unity'
+    && r('/docs/v1/core-api/state', 'unity') === 'core-api/state'
+    && r('#some-heading', 'core-api') === 'core-api'
+    && r('./nope.md', 'core-api') === null;
+})());
+
 // ── End-to-end: a tiny site renders to a structurally valid, non-empty PDF ──
 async function main() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'zpdftest-'));
@@ -224,7 +236,8 @@ async function main() {
     // a folder with two pages, to exercise outline nesting
     fs.mkdirSync(path.join(dir, 'content', 'v1', 'guides'), { recursive: true });
     fs.writeFileSync(path.join(dir, 'content', 'v1', 'guides', 'index.md'), '---\ntitle: "Guides"\n---\n# Guides\n');
-    fs.writeFileSync(path.join(dir, 'content', 'v1', 'guides', 'setup.md'), '---\ntitle: "Setup"\n---\n# Setup\n');
+    fs.writeFileSync(path.join(dir, 'content', 'v1', 'guides', 'setup.md'),
+      '---\ntitle: "Setup"\n---\n# Setup\n\nBack to [Guides](./index.md) and the [home page](../).\n');
     fs.writeFileSync(path.join(dir, 'docs.config.json'), JSON.stringify({ title: 'Test Docs', versions: ['v1'], defaultVersion: 'v1' }));
 
     const site = createSite(dir);
@@ -250,6 +263,15 @@ async function main() {
     ok('has a Guides folder bookmark and a Setup leaf bookmark', text.includes('/Title (Guides)') && text.includes('/Title (Setup)'));
     ok('a bookmark with children is collapsed by default (negative /Count)', /\/Count -\d+/.test(text));
     ok('every bookmark points at a real page object', (text.match(/\/Dest \[(\d+) 0 R \/Fit\]/g) || []).length >= 6);
+
+    // Internal links: an in-PDF jump, not underlined dead text. Setup links
+    // to two other pages, and every contents line is clickable too, so the
+    // /Dest annotations far outnumber the bookmarks alone.
+    const destAnnots = text.match(/\/Subtype \/Link[\s\S]{0,120}?\/Dest \[\d+ 0 R \/Fit\]/g) || [];
+    ok('internal links become GoTo Link annotations', destAnnots.length >= 2 + 6);
+    // The stamp is drawn word by word, so the date and the time are separate show-text ops.
+    ok('generation stamp carries a time of day, not just the date',
+      /\(\d{4}-\d{2}-\d{2}\) Tj/.test(text) && /\(\d{2}:\d{2}:\d{2}\) Tj/.test(text));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
