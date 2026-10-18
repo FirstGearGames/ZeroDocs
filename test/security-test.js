@@ -71,6 +71,13 @@ ok('dark link lightened off an unreadable light primary', (() => {
 })());
 ok('an already-legible primaryDark is left untouched', darkVar(themeVars({ primary: '#2563eb', primaryDark: '#7db8f7' }), 'link') === '#7db8f7');
 ok('a non-hex color is passed through, never mangled to black', darkVar(themeVars({ primary: 'rebeccapurple' }), 'link') === 'rebeccapurple');
+const shellWith = (config, favicon) => renderShell({ config, versions: ['v1'], page: null, assetsVer: '1', favicon });
+ok('logoLightTheme ships both logos, theme-classed', (h => h.includes('class="logo-img logo-img-dark" src="/static/l.png"') && h.includes('class="logo-img logo-img-light" src="/static/d.png"'))(
+  shellWith({ logo: '/static/l.png', logoLightTheme: '/static/d.png' })));
+ok('logoLightTheme url sanitized', shellWith({ logo: '/l.png', logoLightTheme: 'javascript:alert(1)' }).includes('class="logo-img logo-img-light" src="#"'));
+ok('single logo unchanged', shellWith({ logo: '/l.png' }).includes('<img class="logo-img" src="/l.png"'));
+ok('shipped png favicon linked as png', shellWith({}, 'favicon.png').includes('<link rel="icon" href="/favicon.png" type="image/png"/>'));
+ok('generated favicon linked as svg', shellWith({}, null).includes('<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>'));
 ok('shell escapes site title', !renderShell({ config: { title: '</title><script>alert(1)</script>' }, versions: ['v1'], page: null, assetsVer: '1' }).includes('<script>alert(1)</script>'));
 
 // ── XSS: raw HTML passthrough is scrubbed ───────────────────────────────────

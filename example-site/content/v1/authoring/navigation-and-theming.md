@@ -101,6 +101,7 @@ item, and button accent derives from them, in both light and dark mode.
 {
   "title": "My Docs",
   "logo": "/static/logo.svg",
+  "logoLightTheme": "/static/logo-dark.svg",
   "nav": [
     { "label": "Guide", "href": "/docs/v1/authoring" },
     { "label": "GitHub", "href": "https://github.com" }
@@ -110,8 +111,13 @@ item, and button accent derives from them, in both light and dark mode.
 
 `nav` renders the header links (top-left of this page shows an **Authoring
 Guide** link). Without a `logo`, the engine draws a letter tile from the title
-and generates a matching favicon; drop `favicon.svg` in `static/` to override
-it.
+and generates a matching favicon; drop `favicon.svg` (or `.ico`/`.png`) in
+`static/` to override it.
+
+`logoLightTheme` is optional. When set, it is the logo in the light theme and
+`logo` is shown only in the dark theme, so light artwork can sit on the dark
+header and dark artwork on the light one. The switch follows the OS preference
+and the theme toggle, with no flash on load.
 
 ## Static assets
 
