@@ -132,9 +132,11 @@ header {
 .ni-row > .ni { flex: 1; min-width: 0; padding-left: 2px; }
 .ni-row:hover .ni { background: none; color: var(--text); }
 .ni.active, .ni-row:has(> .active) {
-  background: color-mix(in srgb, var(--act-bg) 12%, transparent) !important;
+  background: color-mix(in srgb, var(--act-bg) 14%, transparent) !important;
   color: var(--link) !important; font-weight: 600;
 }
+/* The dark accent fill is darker, so it needs a larger share to read as bright. */
+html.dark .ni.active, html.dark .ni-row:has(> .active) { background: color-mix(in srgb, var(--act-bg) 32%, transparent) !important; }
 .ni-row .ni.active { background: none !important; }
 /* Long titles wrap and grow the row; the chevron and tag stay on the first line. */
 .ni-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
