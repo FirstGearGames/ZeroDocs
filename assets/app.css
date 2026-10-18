@@ -131,7 +131,11 @@ html.dark .ni:hover { background: rgba(255, 255, 255, .05); }
 .ni-row:hover { background: rgba(0, 0, 0, .05); }
 html.dark .ni-row:hover { background: rgba(255, 255, 255, .05); }
 .ni-row:hover .ni { background: none; color: var(--text); }
-.ni-row .chev { padding: 2px 10px 2px 4px; color: var(--muted); }
+/* Square box: rotating a non-square chevron widens it past the sidebar edge. */
+.ni-row .chev {
+  align-self: center; width: 22px; height: 22px; padding: 0; margin-right: 4px;
+  display: flex; align-items: center; justify-content: center; color: var(--muted);
+}
 .ni-row .chev:hover { color: var(--text); }
 .ni.active { background: var(--act-bg) !important; color: var(--act-fg) !important; }
 .ni-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
