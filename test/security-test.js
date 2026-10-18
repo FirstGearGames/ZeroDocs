@@ -118,6 +118,30 @@ ok('kbd', md('[[Ctrl+K]]').includes('<kbd>Ctrl</kbd>'));
 ok('valid card color kept', md(':::card bg="#eef"\nhi\n:::').includes('#eef'));
 ok('valid button renders', md('[Go]{.btn href="/x"}').includes('class="md-btn"'));
 ok('valid badge renders', md('[New]{.badge type="success"}').includes('md-badge-success'));
+ok('code span inside link text', md('[`Foo`](https://x)').includes('<code>Foo</code></a>'));
+ok('author NUL cannot forge a token', !md('a \x00H0\x00 b `c`').includes('<code>c</code> b'));
+
+// ── Nested directives (GitBook-style: hint in step/tab/details, tabs in step) ─
+const renders = s => { try { return md(s); } catch (e) { return 'THREW ' + e.message; } };
+const callouts = h => (h.match(/<blockquote class="c/g) || []).length;
+ok('hint inside steps', (h => callouts(h) === 1 && h.includes('md-steps') && !h.includes(':::'))(
+  renders(':::steps\n## One\n:::hint type="warning"\nCareful\n:::\nafter\n---\n## Two\n:::\n')));
+ok('tabs inside steps, hint inside tab', (h => callouts(h) === 1 && h.includes('gb-tab-pane') && h.includes('b body') && !h.includes(':::'))(
+  renders(':::steps\n## One\n:::tabs\n[A]\n:::hint\nin tab\n:::\n---\n[B]\nb body\n:::endtabs\n---\n## Two\n:::\n')));
+ok('hint and embed inside expand', (h => callouts(h) === 1 && h.includes('youtube.com/embed') && h.includes('tail</p></div></details>'))(
+  renders(':::expand More\n:::hint\nx\n:::\n:::embed https://youtu.be/dQw4w9WgXcQ\n:::\ntail\n:::\n')));
+ok('card and expand inside expand', (h => (h.match(/<details/g) || []).length === 2 && h.includes('md-card') && h.includes('tail</p></div></details>'))(
+  renders(':::expand Outer\n:::card\nc\n:::\n:::expand Inner\ni\n:::\ntail\n:::\n')));
+ok('code fence inside nested hint', renders(':::steps\n:::hint\n```js\nlet a = 1;\n```\n:::\n:::\n').includes('<pre data-lang="js">'));
+ok('cardrow still holds its cards', (h => (h.match(/class="md-card"/g) || []).length === 2)(
+  renders(':::cardrow\n:::card\na\n:::\n:::card\nb\n:::\n:::endrow\n')));
+
+// ── GitBook tags with extra attributes ──────────────────────────────────────
+ok('gitbook tabs/tab/hint with extra attrs', (h => h.includes('gb-tabs') && h.includes('data-tab-label="A"') && h.includes('class="cw"') && !h.includes('{%'))(
+  renders('{% tabs fullWidth="false" %}\n{% tab title="A" extra %}\n{% hint style="warning" extra %}\nw\n{% endhint %}\n{% endtab %}\n{% endtabs %}\n')));
+ok('gitbook embed with extra attrs', renders('{% embed url="https://youtu.be/dQw4w9WgXcQ" fullWidth="false" %}\n').includes('youtube.com/embed'));
+ok('bare embed does not swallow up to a later endembed', (h => h.includes('text between') && (h.match(/gb-embed-link/g) || []).length === 2)(
+  renders('{% embed url="https://a.example" %}\n\ntext between\n\n{% embed url="https://b.example" %}\ncaption\n{% endembed %}\n')));
 
 // ── buildNav sanitizes _meta hrefs (unit, with a temp site) ─────────────────
 (() => {
