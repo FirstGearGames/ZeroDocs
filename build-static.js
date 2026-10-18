@@ -71,12 +71,12 @@ function build() {
   copyDir(path.join(ENGINE_DIR, 'assets'), path.join(outDir, 'assets'));
   copyDir(site.staticDir, path.join(outDir, 'static'));
 
-  const shippedFavicon = ['favicon.svg', 'favicon.ico', 'favicon.png'].find(n => fs.existsSync(path.join(site.staticDir, n)));
-  if (shippedFavicon) fs.copyFileSync(path.join(site.staticDir, shippedFavicon), path.join(outDir, shippedFavicon.endsWith('.svg') ? 'favicon.svg' : shippedFavicon));
+  const favicon = site.favicon();
+  if (favicon) fs.copyFileSync(path.join(site.staticDir, favicon), path.join(outDir, favicon));
   else write(path.join(outDir, 'favicon.svg'), renderFavicon(config));
 
   // ── Per-version data + pre-rendered pages ─────────────────────────────────
-  const shell = (page) => renderShell({ config, versions, page, assetsVer: ASSETS_VER, staticMode: true, basePath });
+  const shell = (page) => renderShell({ config, versions, page, assetsVer: ASSETS_VER, staticMode: true, basePath, favicon });
   let pageCount = 0;
 
   write(path.join(outDir, 'data', 'config.json'), JSON.stringify(config));
