@@ -127,7 +127,7 @@ function loadNav(v) {
     .then(tree => {
       navTree = tree;
       flatNav = flattenNav(tree);
-      renderNav(navTree, $('navtree'), stripBase(location.pathname), 0);
+      renderNav(navTree, $('navtree'), stripBase(location.pathname));
     })
     .catch(() => { $('navtree').innerHTML = '<div class="sep">Navigation unavailable</div>'; });
 }
@@ -139,7 +139,7 @@ function flattenNav(items) {
   });
 }
 
-function renderNav(items, container, curPath, depth) {
+function renderNav(items, container, curPath) {
   container.innerHTML = '';
   items.forEach(item => {
     if (item.type === 'separator') {
@@ -149,7 +149,6 @@ function renderNav(items, container, curPath, depth) {
       container.appendChild(d);
       return;
     }
-    const pad = `${14 + depth * 12}px`;
     const tagHtml = item.tag ? `<span class="tag tag-${esc(item.tag)}">${esc(item.tag)}</span>` : '';
     const isActive = curPath === item.href;
 
@@ -163,21 +162,19 @@ function renderNav(items, container, curPath, depth) {
       a.href = withBase(safeHref(item.href || '#'));
       a.className = 'ni' + (isActive ? ' active' : '');
       if (isActive) a.setAttribute('aria-current', 'page');
-      a.style.paddingLeft = pad;
       a.innerHTML = `<span class="ni-label">${esc(item.title)}</span>${tagHtml}`;
       const chev = document.createElement('button');
       chev.className = 'chev' + (isOpen ? ' open' : '');
       chev.setAttribute('aria-expanded', String(isOpen));
       chev.setAttribute('aria-label', `Toggle ${item.title} section`);
-      chev.textContent = '▶';
-      row.appendChild(a);
-      row.appendChild(chev);
+      chev.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+      row.append(chev, a);
 
       const nc = document.createElement('div');
       nc.className = 'nc' + (isOpen ? ' open' : '');
       const inner = document.createElement('div');
       nc.appendChild(inner);
-      renderNav(item.children, inner, curPath, depth + 1);
+      renderNav(item.children, inner, curPath);
 
       const setOpen = open => {
         nc.classList.toggle('open', open);
@@ -197,7 +194,6 @@ function renderNav(items, container, curPath, depth) {
       if (item.external) { a.target = '_blank'; a.rel = 'noopener'; }
       a.className = 'ni' + (isActive ? ' active' : '');
       if (isActive) a.setAttribute('aria-current', 'page');
-      a.style.paddingLeft = pad;
       a.innerHTML = `<span class="ni-label">${esc(item.title)}</span>${tagHtml}${item.external ? '<span class="ni-ext">↗</span>' : ''}`;
       container.appendChild(a);
     }
