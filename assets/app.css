@@ -85,6 +85,7 @@ header {
 }
 .logo-img { width: 30px; height: 30px; border-radius: 7px; object-fit: contain; flex-shrink: 0; --logo-border: var(--logo-border-light); }
 html.dark .logo-img { --logo-border: var(--logo-border-dark); }
+html:not(.dark) .logo-img-dark, html.dark .logo-img-light { display: none; }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
 .top-nav a { font-size: .875rem; color: var(--muted); white-space: nowrap; }
 .top-nav a:hover { color: var(--link); text-decoration: none; }
