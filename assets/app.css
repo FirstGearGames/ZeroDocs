@@ -84,6 +84,7 @@ header {
   color: var(--act-fg); font-weight: 800; font-size: 13px; flex-shrink: 0;
 }
 .logo-img { width: 30px; height: 30px; border-radius: 7px; object-fit: contain; flex-shrink: 0; }
+html:not(.dark) .logo-img-dark, html.dark .logo-img-light { display: none; }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
 .top-nav a { font-size: .875rem; color: var(--muted); white-space: nowrap; }
 .top-nav a:hover { color: var(--link); text-decoration: none; }

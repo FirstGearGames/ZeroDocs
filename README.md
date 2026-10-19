@@ -213,6 +213,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `title` | Site name, header, tab titles, generated favicon letter. |
 | `description` | Meta description + OpenGraph fallback. |
 | `logo` | Header logo image URL. Falls back to a letter tile. |
+| `logoLightTheme` | Optional logo shown in the light theme; `logo` is then shown only in the dark theme. Follows the OS preference and the theme toggle. |
 | `versions` | Preferred display order of version folders. |
 | `defaultVersion` | The version `/` redirects to. |
 | `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links. Omit to hide them. |
