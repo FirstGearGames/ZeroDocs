@@ -254,19 +254,14 @@ function renderPage(d, v, slug, opts = {}) {
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', d.description || CONFIG.description || '');
 
-  $('ptitle').innerHTML = esc(d.title) + (d.tag ? `<span class="tag tag-${esc(d.tag)}">${esc(d.tag)}</span>` : '');
+  $('ptitle').innerHTML = esc(d.title)
+    + (d.tag ? `<span class="tag tag-${esc(d.tag)}">${esc(d.tag)}</span>` : '')
+    + (d.readingTimeMinutes
+      ? `<span class="tag read-time"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${esc(d.readingTimeMinutes)} min read</span>`
+      : '');
   const sub = $('psubtitle');
   sub.textContent = d.description || '';
   sub.style.display = d.description ? '' : 'none';
-
-  /* meta row: last updated + reading time */
-  const metaBits = [];
-  if (d.lastUpdated) {
-    const date = new Date(d.lastUpdated);
-    if (!isNaN(date)) metaBits.push(`Last updated ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`);
-  }
-  if (d.readingTimeMinutes) metaBits.push(`${d.readingTimeMinutes} min read`);
-  $('pmeta').innerHTML = metaBits.map(b => `<span>${esc(b)}</span>`).join('<span aria-hidden="true">·</span>');
 
   /* cover + banner */
   const cover = $('page-cover');
@@ -310,7 +305,7 @@ function renderPage(d, v, slug, opts = {}) {
   applySavedTabs(prose);
   buildToc(prose);
 
-  /* page actions (top, under the breadcrumb) + edit link (bottom) */
+  /* page actions (breadcrumb row) + edit link (bottom) */
   const rawUrl = new URL(api.raw(v, slug), location.href).href;
   const ask = encodeURIComponent(`Read ${rawUrl} so I can ask questions about it.`);
   $('edittop').innerHTML = `<div class="page-actions">
@@ -320,12 +315,13 @@ function renderPage(d, v, slug, opts = {}) {
     <a class="pa-btn" href="https://chatgpt.com/?q=${ask}" target="_blank" rel="noopener" aria-label="Open in ChatGPT">${PA_ICONS.chatgpt}</a>
     <a class="pa-btn" href="https://claude.ai/new?q=${ask}" target="_blank" rel="noopener" aria-label="Open in Claude">${PA_ICONS.claude}</a>
   </div>`;
+  const updated = d.lastUpdated ? new Date(d.lastUpdated) : null;
   const footer = (d.editUrl
     ? `<a class="edit-link" href="${esc(safeHref(d.editUrl))}" target="_blank" rel="noopener">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
       Edit this page on GitHub</a>`
-    : '') + (d.lastUpdated
-    ? `<span class="last-updated">Last updated ${esc(new Date(d.lastUpdated).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }))}</span>`
+    : '') + (updated && !isNaN(updated)
+    ? `<span class="last-updated">Last updated ${esc(updated.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }))}</span>`
     : '');
   $('editwrap').innerHTML = footer ? `<div class="edit-row">${footer}</div>` : '';
   $('copy-page').addEventListener('click', async e => {
@@ -375,7 +371,6 @@ function renderNotFound(v, slug, isError) {
   document.title = `Page not found | ${CONFIG.title || 'Docs'}`;
   $('ptitle').textContent = '';
   $('psubtitle').style.display = 'none';
-  $('pmeta').innerHTML = '';
   $('page-cover').style.display = 'none';
   $('page-banner').style.display = 'none';
   $('bc').innerHTML = '';

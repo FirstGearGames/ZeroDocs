@@ -168,16 +168,16 @@ html.dark .nc { border-left-color: rgba(255, 255, 255, .1); }
 #content-row { flex: 1; display: flex; min-width: 0; }
 #cwrap { flex: 1; min-width: 0; display: flex; justify-content: center; padding: 32px 24px 64px; }
 #cinner { flex: 1; min-width: 0; max-width: 870px; }
-.bc { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: .8rem; color: var(--muted); margin-bottom: 18px; }
+.bc-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.bc { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: .8rem; color: var(--muted); }
 img.page-banner {
   width: 100%; border-radius: 10px; margin-bottom: 1.5rem; display: block;
   max-height: 320px; object-fit: contain; background: var(--bg2);
 }
 h1.ptitle { font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 6px; outline: none; }
 h1.ptitle .tag { vertical-align: middle; margin-left: 8px; font-size: .65rem; padding: 2px 8px; }
-p.psubtitle { font-size: 1.05rem; color: var(--muted); margin: 0 0 12px; line-height: 1.5; }
-.pmeta { display: flex; flex-wrap: wrap; gap: 14px; font-size: .78rem; color: var(--muted); margin-bottom: 24px; }
-.pmeta:empty { display: none; }
+h1.ptitle .read-time { display: inline-flex; align-items: center; gap: 4px; font-weight: 500; }
+p.psubtitle { font-size: 1.05rem; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
 
 /* ── Table of contents ───────────────────────────────────────────────────── */
 #toc {
@@ -534,7 +534,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 
 /* ── Page actions toolbar, page footer: edit link, prev/next ─────────────── */
 #pagefoot { margin-top: 32px; }
-.edit-top { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+.edit-top { display: flex; flex-shrink: 0; margin-left: auto; }
 .edit-top:empty { display: none; }
 .page-actions { display: inline-flex; align-items: center; gap: 2px; padding: 2px; border: 1px solid var(--border); border-radius: 7px; }
 .pa-btn {
