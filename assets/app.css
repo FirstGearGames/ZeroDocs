@@ -117,31 +117,39 @@ header {
   position: sticky; top: 56px; height: calc(100vh - 56px);
   scrollbar-width: thin;
 }
-#sidebar nav { padding: 10px 0 32px; }
-.sep { padding: 18px 14px 4px; font-size: .875rem; font-weight: 700; color: var(--text); }
+/* Rows sit 12px in from both edges. Folder rows lead with their chevron, and
+   page rows pad by the chevron column so every title lines up. */
+#sidebar nav { padding: 12px 12px 32px; }
+.sep { padding: 20px 2px 4px; font-size: .875rem; font-weight: 700; color: var(--text); }
+#navtree > .sep:first-child { padding-top: 4px; }
 .ni {
-  display: flex; align-items: center; padding: 5px 14px; font-size: .875rem;
-  color: var(--muted); cursor: pointer; gap: 5px; text-decoration: none;
-  border: none; background: none; width: 100%; text-align: left;
+  display: flex; align-items: flex-start; padding: 6px 8px 6px 22px; font-size: .875rem; line-height: 1.4;
+  color: color-mix(in srgb, var(--text) 78%, transparent); cursor: pointer; gap: 6px; text-decoration: none;
+  border: none; background: none; width: 100%; text-align: left; border-radius: 6px;
 }
-.ni:hover { background: rgba(0, 0, 0, .05); color: var(--text); text-decoration: none; }
-html.dark .ni:hover { background: rgba(255, 255, 255, .05); }
-.ni-row { display: flex; align-items: stretch; }
-.ni-row > .ni { flex: 1; min-width: 0; }
-.ni-row:hover { background: rgba(0, 0, 0, .05); }
-html.dark .ni-row:hover { background: rgba(255, 255, 255, .05); }
+.ni:hover, .ni-row:hover { background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--text); text-decoration: none; }
+.ni-row { display: flex; align-items: stretch; border-radius: 6px; }
+.ni-row > .ni { flex: 1; min-width: 0; padding-left: 2px; }
 .ni-row:hover .ni { background: none; color: var(--text); }
-.ni-row .chev { padding: 2px 10px 2px 4px; color: var(--muted); }
-.ni-row .chev:hover { color: var(--text); }
-.ni.active { background: var(--act-bg) !important; color: var(--act-fg) !important; }
-.ni-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ni-ext { flex-shrink: 0; opacity: .6; font-size: .75rem; }
-.chev {
-  font-size: .65rem; transition: transform .3s ease; flex-shrink: 0; margin-left: auto;
-  border: none; background: none; color: inherit; cursor: pointer; padding: 2px 4px; border-radius: 4px;
+.ni.active, .ni-row:has(> .active) {
+  background: color-mix(in srgb, var(--act-bg) 14%, transparent) !important;
+  color: var(--link) !important; font-weight: 600;
 }
+/* The dark accent fill is darker, so it needs a larger share to read as bright. */
+html.dark .ni.active, html.dark .ni-row:has(> .active) { background: color-mix(in srgb, var(--act-bg) 32%, transparent) !important; }
+.ni-row .ni.active { background: none !important; }
+/* Long titles wrap and grow the row; the chevron and tag stay on the first line. */
+.ni-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.ni-ext { flex-shrink: 0; opacity: .6; font-size: .75rem; }
+/* Square-ish fixed box so the 90deg turn stays inside its column. */
+.chev {
+  width: 18px; height: 20px; margin: 6px 0 0 2px; padding: 0; flex-shrink: 0; align-self: flex-start;
+  display: flex; align-items: center; justify-content: center; transition: transform .3s ease;
+  border: none; background: none; color: var(--muted); cursor: pointer; border-radius: 4px;
+}
+.chev:hover { color: var(--text); }
 .chev.open { transform: rotate(90deg); }
-.tag { font-size: .6rem; padding: 1px 5px; border-radius: 99px; font-weight: 700; flex-shrink: 0; background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
+.tag { font-size: .65rem; padding: 0 7px; margin-top: 2px; border-radius: 99px; font-weight: 600; flex-shrink: 0; background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
 .tag-Beta { background: #dbeafe; color: #1e40af; border: none; }
 .tag-Experimental { background: #ede9fe; color: #6d28d9; border: none; }
 .tag-Deprecated { background: #fee2e2; color: #991b1b; border: none; }
@@ -151,15 +159,14 @@ html.dark .tag-Experimental { background: #251a4a; color: #b0a0e8; }
 html.dark .tag-Deprecated { background: #3a1818; color: #d49090; }
 html.dark .tag-New { background: #0e2818; color: #80bb96; }
 
-/* Collapse animation via grid rows, no phantom max-height delays. */
-.nc {
-  display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease;
-  border-left: 1px solid rgba(0, 0, 0, .12); margin-left: 14px;
-}
-html.dark .nc { border-left-color: rgba(255, 255, 255, .1); }
+/* Collapse animation via grid rows, no phantom max-height delays. The guide
+   line hangs under the parent row chevron (2px margin + half its 18px width). */
+.nc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; margin-left: 11px; }
 .nc.open { grid-template-rows: 1fr; }
-.nc > div { overflow: hidden; min-height: 0; }
-.nc .ni { padding-left: 12px; }
+.nc > div {
+  overflow: hidden; min-height: 0; padding-left: 3px;
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--text) 14%, transparent);
+}
 
 /* ── Content column ──────────────────────────────────────────────────────── */
 #main-right { flex: 1; min-width: 0; display: flex; flex-direction: column; }

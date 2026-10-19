@@ -44,7 +44,7 @@ ok('ampersand preserved as entity', md('A & B').includes('A &amp; B'));
 ok('link javascript blocked', md('[x](javascript:alert(1))').includes('href="#"'));
 ok('link vbscript blocked', md('[x](vbscript:msgbox(1))').includes('href="#"'));
 ok('link data blocked', md('[x](data:text/html,<script>alert(1)</script>)').includes('href="#"'));
-ok('safeUrl strips leading control char', safeUrl('javascript:alert(1)') === '#');
+ok('safeUrl strips leading control char', safeUrl('\x01javascript:alert(1)') === '#');
 ok('safeUrl strips tab in scheme', safeUrl('java\tscript:alert(1)') === '#');
 ok('safeUrl strips newline in scheme', safeUrl('java\nscript:alert(1)') === '#');
 ok('safeUrl keeps normal url', safeUrl('https://example.com/a?b=1&c=2') === 'https://example.com/a?b=1&c=2');
