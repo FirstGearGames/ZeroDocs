@@ -180,8 +180,9 @@ breadcrumbs; previous/next; last-updated + reading time; image lightbox;
 back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 
 **Publishing**, per-page `<title>`/description/OpenGraph rendered server-side;
-`sitemap.xml` + `robots.txt`; `/llms.txt` and `/llms-full.txt`; "Copy page as
-Markdown"; configurable redirects.
+`sitemap.xml` + `robots.txt`; `/llms.txt` and `/llms-full.txt`; a page toolbar
+to copy or view the page as Markdown or open it in ChatGPT or Claude;
+configurable redirects.
 
 ## Security
 
