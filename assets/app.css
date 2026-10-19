@@ -532,17 +532,27 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 .md-btn:hover { filter: brightness(1.1); box-shadow: 0 3px 10px rgba(0, 0, 0, .28); transform: translateY(-1px); }
 .md-btn:active { transform: translateY(0); box-shadow: 0 1px 3px rgba(0, 0, 0, .2); filter: brightness(.96); }
 
-/* ── Page footer: edit link, prev/next ───────────────────────────────────── */
+/* ── Page actions toolbar, page footer: edit link, prev/next ─────────────── */
 #pagefoot { margin-top: 32px; }
 .edit-top { display: flex; justify-content: flex-end; margin: 0 0 10px; }
 .edit-top:empty { display: none; }
+.page-actions { display: inline-flex; align-items: center; gap: 2px; padding: 2px; border: 1px solid var(--border); border-radius: 7px; }
+.pa-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 26px; color: var(--muted); background: none; border: none; border-radius: 5px; cursor: pointer;
+}
+.pa-btn:hover, .pa-btn:focus-visible { color: var(--link); background: var(--hover); text-decoration: none; }
+.pa-btn::after {
+  content: attr(aria-label); position: absolute; top: calc(100% + 6px); right: 0; z-index: 20;
+  padding: 3px 7px; border-radius: 4px; background: var(--text); color: var(--bg);
+  font-size: .72rem; line-height: 1.4; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .12s;
+}
+.pa-btn:hover::after, .pa-btn:focus-visible::after { opacity: 1; }
+.pa-sep { width: 1px; height: 16px; margin: 0 2px; background: var(--border); }
 .edit-row { display: flex; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
 .last-updated { margin-left: auto; font-size: .8rem; color: var(--muted); }
-.edit-link, .copy-page {
-  display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; color: var(--muted);
-  background: none; border: none; cursor: pointer; padding: 0;
-}
-.edit-link:hover, .copy-page:hover { color: var(--link); text-decoration: none; }
+.edit-link { display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; color: var(--muted); }
+.edit-link:hover { color: var(--link); text-decoration: none; }
 .pn { display: flex; justify-content: space-between; gap: 14px; margin-top: 20px; }
 .pn:empty { display: none; }
 .pn-btn {
