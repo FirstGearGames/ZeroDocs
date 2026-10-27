@@ -113,6 +113,16 @@ Guide** link). Without a `logo`, the engine draws a letter tile from the title
 and generates a matching favicon; drop `favicon.svg` in `static/` to override
 it.
 
+`logoStyle` rounds and borders the logo image:
+
+```json
+"logoStyle": { "radius": 8, "border": "#ffffff", "borderDark": "#000000", "borderWidth": 2 }
+```
+
+`radius` rounds the corners and clips the image to them. `border` draws a
+border outside the image, `borderDark` gives it a different color in dark
+mode, and `borderWidth` defaults to 1px. Every key is optional.
+
 ## Static assets
 
 Anything in the site's `static/` folder is served at `/static/…`, including

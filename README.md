@@ -213,6 +213,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `title` | Site name, header, tab titles, generated favicon letter. |
 | `description` | Meta description + OpenGraph fallback. |
 | `logo` | Header logo image URL. Falls back to a letter tile. |
+| `logoStyle` | Logo look: `{ "radius", "border", "borderDark", "borderWidth" }`. `radius` rounds and clips the image; `border` draws a border outside it (`borderDark` is its dark-mode color, `borderWidth` defaults to 1px). |
 | `versions` | Preferred display order of version folders. |
 | `defaultVersion` | The version `/` redirects to. |
 | `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links. Omit to hide them. |
