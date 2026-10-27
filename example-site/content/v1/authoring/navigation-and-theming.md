@@ -109,7 +109,8 @@ item, and button accent derives from them, in both light and dark mode.
 ```
 
 `nav` renders the header links (top-left of this page shows an **Authoring
-Guide** link). Without a `logo`, the engine draws a letter tile from the title
+Guide** link). Add `"button": true` to a link to draw it as a button in the
+announcement bar's muted accent color. Without a `logo`, the engine draws a letter tile from the title
 and generates a matching favicon; drop `favicon.svg` in `static/` to override
 it.
 

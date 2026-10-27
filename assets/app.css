@@ -88,6 +88,13 @@ html.dark .logo-img { --logo-border: var(--logo-border-dark); }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
 .top-nav a { font-size: .875rem; color: var(--muted); white-space: nowrap; }
 .top-nav a:hover { color: var(--link); text-decoration: none; }
+/* A nav link marked "button": the announcement bar's muted accent tint. */
+.top-nav a.nav-btn {
+  padding: 4px 12px; border-radius: 6px; color: var(--text);
+  background: color-mix(in srgb, var(--act-bg) 10%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--act-bg) 25%, var(--bg));
+}
+.top-nav a.nav-btn:hover { color: var(--text); background: color-mix(in srgb, var(--act-bg) 18%, var(--bg)); }
 .hright { margin-left: auto; display: flex; align-items: center; gap: 6px; }
 .search-pill {
   display: flex; align-items: center; gap: 6px; padding: 5px 10px;
