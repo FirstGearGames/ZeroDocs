@@ -72,6 +72,8 @@ ok('dark link lightened off an unreadable light primary', (() => {
 ok('an already-legible primaryDark is left untouched', darkVar(themeVars({ primary: '#2563eb', primaryDark: '#7db8f7' }), 'link') === '#7db8f7');
 ok('a non-hex color is passed through, never mangled to black', darkVar(themeVars({ primary: 'rebeccapurple' }), 'link') === 'rebeccapurple');
 ok('shell escapes site title', !renderShell({ config: { title: '</title><script>alert(1)</script>' }, versions: ['v1'], page: null, assetsVer: '1' }).includes('<script>alert(1)</script>'));
+ok('announcement inline links are escaped and scheme-checked', (h => !h.includes('<script>alert(1)</script>') && !h.includes('href="javascript:'))(
+  renderShell({ config: { announcement: { text: '<script>alert(1)</script> [x](javascript:alert(1))' } }, versions: ['v1'], page: null, assetsVer: '1' })));
 
 // ── XSS: raw HTML passthrough is scrubbed ───────────────────────────────────
 ok('rawhtml script removed', !scrubHtml('<div><script>alert(1)</script>ok</div>').includes('<script'));

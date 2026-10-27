@@ -217,7 +217,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `defaultVersion` | The version `/` redirects to. |
 | `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links. Omit to hide them. |
 | `nav` | Header links: `[{ "label": "…", "href": "…" }]`. |
-| `announcement` | Site-wide bar. String, or `{ "text", "href", "dismissible" }`. |
+| `announcement` | Site-wide bar. String, or `{ "text", "href", "dismissible" }`. Without `href`, the text may hold inline Markdown links. |
 | `footer` | Footer. String, or `{ "text", "links": [{ "label", "href" }] }`. |
 | `redirects` | `{ "/docs/v1/old": "/docs/v1/new" }`, served as 301s (same-origin only). |
 | `theme` | Colors: `primary`, `primaryDark`, `success`, `info`, `warning`, `danger`, `sidebar`, `sidebarDark`. |

@@ -639,12 +639,14 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 .announce {
   display: flex; align-items: center; justify-content: center; gap: 12px;
   padding: 8px 44px; text-align: center; font-size: .85rem;
-  background: var(--act-bg); color: var(--act-fg); position: relative;
+  /* A muted tint of the theme's own accent, so the bar is noticed without shouting. */
+  background: color-mix(in srgb, var(--act-bg) 10%, var(--bg)); color: var(--text); position: relative;
+  border-bottom: 1px solid color-mix(in srgb, var(--act-bg) 25%, var(--bg));
 }
-.announce a { color: var(--act-fg); text-decoration: underline; }
+.announce a { color: var(--link); text-decoration: underline; }
 .announce-close {
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; color: var(--act-fg); font-size: 1.3rem;
+  background: none; border: none; color: var(--muted); font-size: 1.3rem;
   line-height: 1; cursor: pointer; opacity: .8; padding: 0 4px;
 }
 .announce-close:hover { opacity: 1; }
