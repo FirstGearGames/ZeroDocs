@@ -217,7 +217,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `versions` | Preferred display order of version folders. |
 | `defaultVersion` | The version `/` redirects to. |
 | `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links. Omit to hide them. |
-| `nav` | Header links: `[{ "label": "…", "href": "…" }]`. Add `"button": true` to draw a link as a button. |
+| `nav` | Header links: `[{ "label": "…", "href": "…" }]`. Add `"button": true` to draw a link as a button. The static build writes the whole version as one Markdown file to `/static/downloads/latest.md` (and `<version>.md`); a nav link ending in `.md` downloads instead of opening. |
 | `announcement` | Site-wide bar. String, or `{ "text", "href", "dismissible" }`. Without `href`, the text may hold inline Markdown links. |
 | `footer` | Footer. String, or `{ "text", "links": [{ "label", "href" }] }`. |
 | `redirects` | `{ "/docs/v1/old": "/docs/v1/new" }`, served as 301s (same-origin only). |

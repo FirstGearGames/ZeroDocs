@@ -51,6 +51,7 @@ function build() {
   const site = createSite();
   const config = site.loadConfig();
   const versions = site.versions(config);
+  const defaultVersion = site.defaultVersion(config);
   const outDir = path.resolve(process.env.DOCS_OUT || path.join(site.root, 'out'));
   // Sub-path the site is served under (e.g. '/ZeroDocs' on a GitHub Pages
   // project site). Empty for a domain root (Cloudflare Pages, custom domain).
@@ -108,10 +109,16 @@ function build() {
       write(path.join(outDir, 'docs', v, slug, 'index.html'), shell({ title: payload.title, description: payload.description }));
       pageCount++;
     }
+
+    // Whole-version Markdown download, the text twin of build-pdf.js's PDF.
+    // Same raw page bodies the copy-page button already serves, frontmatter
+    // stripped and each titled, in the PDF's page order.
+    const md = contentLib.listPages(site, v).map(p => `# ${p.title}\n\n${p.content.trim()}`).join('\n\n---\n\n') + '\n';
+    write(path.join(outDir, 'static', 'downloads', `${v}.md`), md);
+    if (v === defaultVersion) write(path.join(outDir, 'static', 'downloads', 'latest.md'), md);
   }
 
   // ── Root + SPA fallback pages ─────────────────────────────────────────────
-  const defaultVersion = site.defaultVersion(config);
   const rootRedirect = `${basePath}/docs/${defaultVersion}`;
   write(path.join(outDir, 'index.html'),
     `<!doctype html><meta charset="utf-8"><title>${escapeHtml(config.title || 'Docs')}</title>`
