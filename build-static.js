@@ -83,7 +83,8 @@ function build() {
   write(path.join(outDir, 'data', 'config.json'), JSON.stringify(config));
 
   for (const v of versions) {
-    write(path.join(outDir, 'data', v, 'nav.json'), JSON.stringify(buildNav(site, v)));
+    const nav = buildNav(site, v);
+    write(path.join(outDir, 'data', v, 'nav.json'), JSON.stringify(nav));
     write(path.join(outDir, 'data', v, 'search.json'), JSON.stringify(buildSearchIndex(site, v)));
 
     // The version landing page (slug '').
@@ -112,8 +113,13 @@ function build() {
 
     // Whole-version Markdown download, the text twin of build-pdf.js's PDF.
     // Same raw page bodies the copy-page button already serves, frontmatter
-    // stripped and each titled, in the PDF's page order.
-    const md = contentLib.listPages(site, v).map(p => `# ${p.title}\n\n${p.content.trim()}`).join('\n\n---\n\n') + '\n';
+    // stripped and each titled, in sidebar order (pages missing from the
+    // sidebar go last).
+    const navOrder = [];
+    const walkNav = items => (items || []).forEach(i => { if (i.href) navOrder.push(i.href); walkNav(i.children); });
+    walkNav(nav);
+    const rank = p => { const i = navOrder.indexOf(p.href); return i < 0 ? Infinity : i; };
+    const md = contentLib.listPages(site, v).sort((a, b) => rank(a) - rank(b)).map(p => `# ${p.title}\n\n${p.content.trim()}`).join('\n\n---\n\n') + '\n';
     write(path.join(outDir, 'static', 'downloads', `${v}.md`), md);
     if (v === defaultVersion) write(path.join(outDir, 'static', 'downloads', 'latest.md'), md);
   }
