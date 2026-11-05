@@ -13,7 +13,7 @@
     "build:example": "node build-static.js ./example-site",
     "build:pdf": "node build-pdf.js",
     "build:pdf:example": "node build-pdf.js ./example-site",
-    "test": "node test/security-test.js && node test/pdf-test.js"
+    "test": "node test/security-test.js && node test/pdf-test.js && node test/markdown-discovery-test.js && node test/client-navigation-test.js"
   },
   "engines": {
     "node": ">=18"

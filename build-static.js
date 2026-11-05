@@ -25,6 +25,7 @@ const { buildNav } = require('./lib/navigation');
 const { buildSearchIndex } = require('./lib/search');
 const contentLib = require('./lib/content');
 const { renderShell, renderFavicon } = require('./lib/shell');
+const { rawMarkdownUrl } = require('./lib/util');
 
 const ENGINE_DIR = __dirname;
 const pkg = (() => { try { return JSON.parse(fs.readFileSync(path.join(ENGINE_DIR, 'package.json'), 'utf8')); } catch { return {}; } })();
@@ -93,7 +94,7 @@ function build() {
       write(path.join(outDir, 'data', v, 'doc', 'index.json'), JSON.stringify(rootPayload));
       const rawRoot = contentLib.getRawPage(site, v, '');
       if (rawRoot !== null) write(path.join(outDir, 'data', v, 'raw', 'index.md'), rawRoot);
-      write(path.join(outDir, 'docs', v, 'index.html'), shell({ title: rootPayload.title, description: rootPayload.description }));
+      write(path.join(outDir, 'docs', v, 'index.html'), shell(rootPayload));
       pageCount++;
     } else {
       write(path.join(outDir, 'docs', v, 'index.html'), shell(null));
@@ -107,7 +108,7 @@ function build() {
       write(path.join(outDir, 'data', v, 'doc', `${slug}.json`), JSON.stringify(payload));
       const raw = contentLib.getRawPage(site, v, slug);
       if (raw !== null) write(path.join(outDir, 'data', v, 'raw', `${slug}.md`), raw);
-      write(path.join(outDir, 'docs', v, slug, 'index.html'), shell({ title: payload.title, description: payload.description }));
+      write(path.join(outDir, 'docs', v, slug, 'index.html'), shell(payload));
       pageCount++;
     }
 
@@ -183,7 +184,7 @@ function writeCrawlerFiles(site, config, versions, outDir, basePath) {
       lines.push(`## ${v}`, '');
       for (const p of contentLib.listPages(site, v)) {
         if (full) lines.push('---', '', `# ${p.title}`, `URL: ${b}${p.href}`, '', p.content.trim(), '');
-        else lines.push(`- [${p.title}](${b}${p.href})${p.description ? `: ${p.description}` : ''}`);
+        else lines.push(`- [${p.title}](${b}${rawMarkdownUrl(v, p.slug, true)})${p.description ? `: ${p.description}` : ''}`);
       }
       lines.push('');
     }

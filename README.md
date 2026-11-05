@@ -183,6 +183,13 @@ back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 `sitemap.xml` + `robots.txt`; `/llms.txt` and `/llms-full.txt`; "Copy page as
 Markdown"; configurable redirects.
 
+The compact `/llms.txt` index links directly to the existing raw Markdown
+files in static builds and the raw API in live preview. Each resolved page
+also advertises its Markdown URL with `rel="alternate" type="text/markdown"`
+and the index with `rel="describedby"`. The page-specific link follows
+client-side navigation. These exports preserve the source Markdown, including
+its relative links; they do not rebase or rewrite the page body.
+
 ## Security
 
 ZeroDocs treats all content as untrusted, so a hostile pull request cannot run
