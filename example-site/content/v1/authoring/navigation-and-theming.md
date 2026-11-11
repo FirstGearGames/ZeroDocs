@@ -101,7 +101,7 @@ item, and button accent derives from them, in both light and dark mode.
 {
   "title": "My Docs",
   "logo": "/static/logo.svg",
-  "logoLightTheme": "/static/logo-dark.svg",
+  "logoDark": "/static/logo-dark.svg",
   "nav": [
     { "label": "Guide", "href": "/docs/v1/authoring" },
     { "label": "GitHub", "href": "https://github.com" }
@@ -115,9 +115,9 @@ announcement bar's muted accent color. Without a `logo`, the engine draws a lett
 and generates a matching favicon; drop `favicon.svg` (or `.ico`/`.png`) in
 `static/` to override it.
 
-`logoLightTheme` is optional. When set, it is the logo in the light theme and
-`logo` is shown only in the dark theme, so light artwork can sit on the dark
-header and dark artwork on the light one. The switch follows the OS preference
+`logoDark` is optional. When set, it is the logo in the dark theme and `logo`
+is shown only in the light theme, so dark artwork can sit on the light header
+and light artwork on the dark one. The switch follows the OS preference
 and the theme toggle, with no flash on load.
 
 `logoStyle` rounds and borders the logo image:
