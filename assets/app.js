@@ -79,11 +79,12 @@ syncThemeIcons();
 /* ── Announcement bar (dismiss, remembered per message) ─────────────────────── */
 (() => {
   const el = $('announce');
-  if (!el) return;
+  const btn = $('announce-close');
+  /* Only a dismissible bar honours a saved dismissal, so turning dismissible off brings it back. */
+  if (!el || !btn) return;
   const key = 'docs:announce:' + (el.getAttribute('data-key') || '');
   if (store.get(key) === '1') { el.remove(); return; }
-  const btn = $('announce-close');
-  if (btn) btn.addEventListener('click', () => { el.remove(); store.set(key, '1'); });
+  btn.addEventListener('click', () => { el.remove(); store.set(key, '1'); });
 })();
 
 /* Platform-appropriate shortcut label. */
