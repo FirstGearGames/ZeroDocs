@@ -178,7 +178,8 @@ accepted on import; relative `*.md` links rewritten to routes.
 
 **Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`), its
 index downloaded on first use rather than with every page;
-dark/light mode (follows the OS); heading anchors; scroll-spy table of contents;
+dark/light mode (follows the OS); heading anchors; scroll-spy table of contents
+(folded under the title on narrow screens);
 breadcrumbs; previous/next; last-updated + reading time; image lightbox;
 back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 

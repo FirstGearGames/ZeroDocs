@@ -457,13 +457,17 @@ function buildToc(prose) {
   if (tocCleanup) { tocCleanup(); tocCleanup = null; }
   const heads = [...prose.querySelectorAll('h2, h3')];
   const list = $('toclist');
-  list.innerHTML = heads.map(h =>
+  const inline = $('toc-inline');       // the same links, under the title on narrow screens
+  list.innerHTML = $('toclist-inline').innerHTML = heads.map(h =>
     `<a class="toc-a ${h.tagName === 'H2' ? 'toc-h2' : 'toc-h3'}" href="#${esc(h.id)}">${esc(headingText(h))}</a>`).join('');
   $('toc').style.display = heads.length ? '' : 'none';
+  inline.hidden = !heads.length;
+  inline.open = false;
 
-  list.querySelectorAll('.toc-a').forEach(a => {
+  document.querySelectorAll('#toclist .toc-a, #toclist-inline .toc-a').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
+      inline.open = false;              // fold first, so the scroll target is measured after
       const el = document.getElementById(a.getAttribute('href').slice(1));
       if (!el) return;
       window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' });

@@ -102,7 +102,7 @@ indentation**), task lists (`- [ ]` / `- [x]`), tables (**column alignment**
 via `:---`, `:---:`, `---:`), links, images, `inline code`, fenced code
 blocks, blockquotes, `~~strikethrough~~`, and `<https://…>` autolinks.
 Headings get ids, hover **anchor links**, and populate the "On this page"
-table of contents. External links open in a new tab with an `↗` marker.
+table of contents, which folds under the page title on narrow screens. External links open in a new tab with an `↗` marker.
 
 Two conveniences worth knowing:
 

@@ -66,6 +66,7 @@ const prose = html => (html.match(/<div id="prose" class="prose">([\s\S]*?)<\/di
     const data = pageData(reuse.text);
     ok('static page hands the client its metadata, without the HTML twice', data && data.title === 'Includes & Variables' && data.slug === 'authoring/reuse' && !('html' in data));
     ok('static page readable without JavaScript', !reuse.text.includes('requires JavaScript'));
+    ok('static page has the folding contents list for narrow screens', reuse.text.includes('<details id="toc-inline" class="toc-inline" hidden><summary>On this page</summary>'));
     const home = await get(stat, '/docs/v1/');
     ok('static version landing page carries its content', prose(home.text).length > 200 && pageData(home.text).slug === '');
     ok('static page links its public address', reuse.text.includes('<link rel="canonical" href="https://firstgeargames.github.io/ZeroDocs/docs/v1/authoring/reuse"/>'));

@@ -214,6 +214,11 @@ p.psubtitle { font-size: 1.05rem; color: var(--muted); margin: 0 0 24px; line-he
 .toc-a.on { color: var(--link); border-left-color: var(--link); }
 .toc-h2 { font-weight: 700; }
 .toc-h3 { padding-left: 20px; }
+/* Too narrow for the side list: the same links fold under the title instead. */
+.toc-inline { display: none; margin: 0 0 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); }
+@media (max-width: 1179px) { .toc-inline:not([hidden]) { display: block; } }
+.toc-inline summary { cursor: pointer; padding: 9px 14px; font-size: .85rem; font-weight: 600; }
+.toc-inline > div { padding: 0 14px 12px; }
 
 /* ── Prose ───────────────────────────────────────────────────────────────── */
 .prose { font-size: .9375rem; line-height: 1.75; color: var(--text); }
@@ -703,7 +708,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 
 /* ── Print ───────────────────────────────────────────────────────────────── */
 @media print {
-  header, #sidebar, #sovl, #toc, #pn, #editwrap, #edittop, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor { display: none !important; }
+  header, #sidebar, #sovl, #toc, .toc-inline, #pn, #editwrap, #edittop, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor { display: none !important; }
   #cwrap { padding: 0; }
   #cinner { max-width: 100%; }
   body { background: #fff; color: #000; }
