@@ -177,7 +177,9 @@ variables; draft pages; dark-mode image twins; `{% hint %}`-style tags
 accepted on import; relative `*.md` links rewritten to routes.
 
 **Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`), its
-index downloaded on first use rather than with every page;
+index downloaded on first use rather than with every page, results grouped by
+page and filterable by top-level section (`Tab` steps through them), and the
+page highlighting the query for as long as it stays in the search box;
 dark/light mode (follows the OS); heading anchors; scroll-spy table of contents
 (folded under the title on narrow screens);
 breadcrumbs; previous/next; last-updated + reading time; image lightbox;

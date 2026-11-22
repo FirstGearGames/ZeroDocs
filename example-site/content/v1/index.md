@@ -17,11 +17,11 @@ Every feature the engine supports, callouts, cards, tabs, code, and more, each s
 - **Markdown-based**, Write docs in plain Markdown with full frontmatter support
 - **File-system routing**, Folder structure automatically becomes your sidebar navigation
 - **Syntax highlighting**, Code blocks with language detection and copy button
-- **Full-text search**, Press `Cmd+K` (or `Ctrl+K`) to open the search modal
+- **Full-text search**, Press `Cmd+K` (or `Ctrl+K`) to open the search modal. Results group by page, a section filter narrows them, and the page you open highlights your query until you clear the search box
 - **Versioning**, Publish multiple doc versions side by side when you need them (this demo ships one)
 - **Dark/Light mode**, Toggle theme with persistent preferences
 - **Mobile-friendly**, Hamburger sidebar on small screens
-- **Table of contents**, Auto-generated right sidebar with heading navigation
+- **Table of contents**, Auto-generated right sidebar with heading navigation, folded under the title on narrow screens
 - **Material Cards & Buttons**, Rich UI components with full customization
 
 ## Callout Blocks

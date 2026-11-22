@@ -53,6 +53,7 @@ let navTree = [];
 let flatNav = [];
 let searchIdx = null;        // the version's search index, fetched on first use
 let searchPending = null;
+let searchScope = '';         // a top-level folder's href to search within, or '' for all
 let searchSel = -1;
 let tocCleanup = null;
 let lastFocus = null;
@@ -310,6 +311,7 @@ function renderPage(d, v, slug, opts = {}) {
   enhanceCodeBlocks(prose);
   applySavedTabs(prose);
   buildToc(prose);
+  syncSearchHighlights();
 
   /* page actions (breadcrumb row) + edit link (bottom) */
   const rawUrl = new URL(api.raw(v, slug), location.href).href;
@@ -539,57 +541,132 @@ function highlightTerms(textEsc, terms) {
   return out;
 }
 
+const MAX_RESULTS = 50;
+
+/** The sidebar's top-level folders, offered as search filters; none unless there are two. */
+function searchScopes() {
+  const folders = navTree.filter(n => n.children && n.children.length && n.href);
+  return folders.length > 1 ? folders : [];
+}
+
+function renderScopeChips() {
+  const scopes = searchScopes();
+  if (!scopes.some(s => s.href === searchScope)) searchScope = '';
+  $('schips').hidden = $('shint-tab').hidden = !scopes.length;
+  $('schips').innerHTML = [{ title: 'All', href: '' }, ...scopes].map(s =>
+    `<button type="button" class="schip" tabindex="-1" data-scope="${esc(s.href)}" aria-pressed="${s.href === searchScope}">${esc(s.title)}</button>`).join('');
+}
+
+function setSearchScope(scope) {
+  searchScope = scope;
+  renderScopeChips();
+  runSearch($('sinput').value);
+}
+
 function runSearch(query) {
   const box = $('sresults');
   searchSel = -1;
   $('sinput').setAttribute('aria-activedescendant', '');
+  syncSearchHighlights();
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) { box.innerHTML = ''; $('scount').textContent = ''; return; }
   if (!searchIdx) { box.innerHTML = '<div class="sempty">Loading…</div>'; return; }
 
+  const inScope = e => !searchScope || e.href === searchScope || e.href.startsWith(searchScope + '/') || e.href.startsWith(searchScope + '#');
   const results = searchIdx
+    .filter(inScope)
     .map(e => ({ e, score: scoreEntry(e, terms) }))
     .filter(r => r.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, MAX_RESULTS);
 
   $('scount').textContent = `${results.length} result${results.length === 1 ? '' : 's'}`;
   if (!results.length) { box.innerHTML = '<div class="sempty">No results found.</div>'; return; }
 
-  box.innerHTML = results.map(({ e }, i) => {
-    const label = highlightTerms(esc(e.title), terms)
-      + (e.section ? `<span class="si-sec"> › ${highlightTerms(esc(e.section), terms)}</span>` : '');
-    /* snippet: text around the first content match */
-    let snippet = e.description || '';
-    if (!snippet) {
+  /* One group per page, ordered by its best match: the page leads, its matching sections follow. */
+  const groups = new Map();
+  for (const { e } of results) {
+    const page = e.href.split('#')[0];
+    if (!groups.has(page)) groups.set(page, { page: null, sections: [] });
+    if (e.section) groups.get(page).sections.push(e);
+    else groups.get(page).page = e;
+  }
+  let i = 0;
+  const item = (e, sub) => {
+    let snippet = sub ? '' : e.description || '';
+    if (!snippet) {   // text around the first content match
       const pos = e.content.toLowerCase().indexOf(terms[0]);
       snippet = pos >= 0 ? (pos > 40 ? '…' : '') + e.content.slice(Math.max(0, pos - 40), pos + 90) : e.content.slice(0, 110);
     }
-    return `<a class="sitem" id="sitem-${i}" role="option" aria-selected="false" href="${esc(withBase(e.href))}">
-      <div class="si-title">${label}</div>
+    return `<a class="sitem${sub ? ' sub' : ''}" id="sitem-${i++}" role="option" aria-selected="false" href="${esc(withBase(e.href))}">
+      <div class="si-title">${highlightTerms(esc(sub ? e.section : e.title), terms)}</div>
       <div class="si-desc">${highlightTerms(esc(snippet), terms)}</div>
     </a>`;
-  }).join('');
+  };
+  box.innerHTML = [...groups].map(([page, g]) =>
+    item(g.page || searchIdx.find(x => x.href === page) || { title: g.sections[0].title, href: page, content: '' }, false)
+    + g.sections.map(s => item(s, true)).join('')).join('');
   box.querySelectorAll('.sitem').forEach(a => a.addEventListener('click', closeSearch));
+}
+
+/* ── Search highlights: the page marks whatever the search box holds ─────── */
+function syncSearchHighlights() {
+  const q = $('sinput').value.trim();
+  $('search-label').textContent = q || 'Search';
+  $('search-clear').hidden = !q;
+  markHits($('prose'), q.toLowerCase().split(/\s+/).filter(t => t.length > 1));
+}
+
+function markHits(root, terms) {
+  root.querySelectorAll('mark.hit').forEach(m => m.replaceWith(...m.childNodes));
+  root.normalize();
+  if (!terms.length) return;
+  const source = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const any = new RegExp(source, 'i');
+  const every = new RegExp(source, 'gi');
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) if (any.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+  for (const node of nodes) {
+    const text = node.nodeValue;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    text.replace(every, (m, at) => {
+      const mark = document.createElement('mark');
+      mark.className = 'hit';
+      mark.textContent = m;
+      frag.append(text.slice(last, at), mark);
+      last = at + m.length;
+      return m;
+    });
+    frag.append(text.slice(last));
+    node.replaceWith(frag);
+  }
 }
 
 function openSearch() {
   lastFocus = document.activeElement;
   $('smodal').classList.add('open');
+  renderScopeChips();
+  runSearch($('sinput').value);
   if (!searchIdx) loadSearch(ver).then(() => { if ($('smodal').classList.contains('open')) runSearch($('sinput').value); });
-  searchSel = -1;
-  setTimeout(() => $('sinput').focus(), 40);
+  setTimeout(() => { $('sinput').focus(); $('sinput').select(); }, 40);
 }
+/* Closing keeps the query: the page stays highlighted until the box is cleared. */
 function closeSearch() {
   $('smodal').classList.remove('open');
-  $('sinput').value = '';
-  $('sresults').innerHTML = '';
-  $('scount').textContent = '';
   searchSel = -1;
   if (lastFocus && lastFocus.focus) lastFocus.focus();
 }
 
 $('search-open').addEventListener('click', openSearch);
+$('search-clear').addEventListener('click', () => { $('sinput').value = ''; runSearch(''); });
+$('schips').addEventListener('click', e => {
+  const chip = e.target.closest('.schip');
+  if (!chip) return;
+  setSearchScope(chip.dataset.scope);
+  $('sinput').focus();
+});
 $('search-open').addEventListener('pointerenter', () => { if (!searchIdx) loadSearch(ver); });   // warm it up
 $('smodal').addEventListener('click', e => { if (e.target === $('smodal')) closeSearch(); });
 $('sinput').addEventListener('input', e => runSearch(e.target.value));
@@ -598,7 +675,12 @@ $('sinput').addEventListener('keydown', e => {
   if (e.key === 'ArrowDown') { e.preventDefault(); searchSel = Math.min(searchSel + 1, items.length - 1); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); searchSel = Math.max(searchSel - 1, 0); }
   else if (e.key === 'Enter' && searchSel >= 0) { items[searchSel]?.click(); return; }
-  else if (e.key === 'Tab') { e.preventDefault(); return; }      // stay in the modal
+  else if (e.key === 'Tab') {      // stay in the modal; Tab steps through the section filters
+    e.preventDefault();
+    const scopes = ['', ...searchScopes().map(s => s.href)];
+    if (scopes.length > 1) setSearchScope(scopes[(scopes.indexOf(searchScope) + (e.shiftKey ? scopes.length - 1 : 1)) % scopes.length]);
+    return;
+  }
   else return;
   items.forEach((it, i) => {
     it.classList.toggle('hi', i === searchSel);

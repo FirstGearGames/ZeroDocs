@@ -109,6 +109,11 @@ html:not(.dark) .img-dark, html.dark .img-light { display: none; }
 }
 .search-pill:hover { border-color: var(--link); color: var(--text); }
 .search-pill kbd { font-size: .7rem; padding: 1px 4px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg); }
+/* While the search box holds text, the pill shows it and the page highlights it. */
+#search-label { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.search-clear { font-size: 1.15rem; line-height: 1; }
+.search-clear[hidden] { display: none; }
+mark.hit { background: color-mix(in srgb, #facc15 45%, transparent); color: inherit; border-radius: 2px; }
 .ibtn {
   padding: 5px; border: none; background: transparent; cursor: pointer;
   color: var(--muted); border-radius: 6px; display: flex; align-items: center;
@@ -602,9 +607,20 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 }
 #sinput { width: 100%; padding: 13px 16px; font-size: 1rem; border: none; background: transparent; color: var(--text); outline: none; }
 #sinput:focus-visible { outline: none; box-shadow: inset 0 -2px 0 var(--link); }
-.sresults { max-height: 380px; overflow-y: auto; }
+.schips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px; border-top: 1px solid var(--border); }
+.schips[hidden], .shint [hidden] { display: none; }
+.schip {
+  font: inherit; font-size: .75rem; padding: 3px 10px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: none; color: var(--muted);
+}
+.schip:hover { color: var(--text); }
+.schip[aria-pressed="true"] { color: var(--link); border-color: var(--link); background: color-mix(in srgb, var(--link) 10%, transparent); }
+.sresults { max-height: 420px; overflow-y: auto; }
 .sitem { display: block; padding: 9px 15px; border-top: 1px solid var(--border); cursor: pointer; text-decoration: none !important; color: var(--text); }
 .sitem:hover, .sitem.hi { background: var(--bg2); }
+/* A page's matching sections sit under it, indented. */
+.sitem.sub { padding: 6px 15px 6px 32px; border-top: none; }
+.sitem.sub .si-title { font-weight: 500; font-size: .84rem; }
 .si-title { font-weight: 600; font-size: .875rem; }
 .si-title .si-sec { font-weight: 400; color: var(--muted); }
 .si-title mark, .si-desc mark { color: var(--link); font-weight: 700; background: none; }
