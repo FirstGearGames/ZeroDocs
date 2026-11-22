@@ -2,7 +2,7 @@
 
 **Free, MIT-licensed, feature-rich** documentation-site software. Point it at a
 folder of Markdown, a JSON config, and a static-assets directory and it serves a
-complete GitBook-style site: sidebar navigation, full-text section search,
+complete documentation site: sidebar navigation, full-text section search,
 dark/light mode, versioning, syntax highlighting, callouts, cards, tabs, badges,
 steps, video embeds, live reload, and more.
 
@@ -171,8 +171,9 @@ The generator writes `.nojekyll` so Pages serves the output verbatim.
 alignment; fenced code with built-in highlighting (~20 languages, no CDN) and
 titles; callouts (three syntaxes); tabs (synced and remembered); cards,
 nav/ref/file cards, buttons, badges, steps, grids, keyboard keys, field tables;
-video embeds (YouTube/Vimeo); page references; collapsible sections; GitBook
-`{% %}` syntax accepted on import; relative `*.md` links rewritten to routes.
+video embeds (YouTube/Vimeo); page references; collapsible sections;
+`{% hint %}`-style tags accepted on import; relative `*.md` links rewritten to
+routes.
 
 **Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`);
 dark/light mode (follows the OS); heading anchors; scroll-spy table of contents;
@@ -197,7 +198,7 @@ documented in [SECURITY.md](SECURITY.md).
 |------|---------|
 | `preview-server.js` | Live authoring server, resolves the site root and serves it. |
 | `build-static.js` | Static-site generator (Cloudflare Pages, any static host). |
-| `lib/` | The engine: site, markdown, directives, gitbook compat, highlight, content, navigation, search, shell, server, util. |
+| `lib/` | The engine: site, markdown, directives, `{% %}` tag import, highlight, content, navigation, search, shell, server, util. |
 | `assets/app.css` / `assets/app.js` | The client (served with ETags; live and static modes). |
 | `test/security-test.js` | The security regression suite (`npm test`). |
 | `scripts/content-scan.js` | Advisory content tripwire for reviewers. |
