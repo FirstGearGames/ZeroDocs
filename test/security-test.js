@@ -169,6 +169,21 @@ ok('bare embed does not swallow up to a later endembed', (h => h.includes('text 
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 })();
 
+// ── Search indexes each section of a CRLF (Windows checkout) page ───────────
+(() => {
+  const fs = require('fs'), os = require('os');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ztest-'));
+  try {
+    fs.mkdirSync(path.join(dir, 'content', 'v1'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'content', 'v1', 'index.md'),
+      '---\r\ntitle: Home\r\n---\r\n# Home\r\n\r\nIntro.\r\n\r\n## Deep section\r\n\r\nFar down the page.\r\n');
+    const { createSite } = require(LIB + '/site');
+    const { buildSearchIndex } = require(LIB + '/search');
+    const entries = buildSearchIndex(createSite(dir), 'v1');
+    ok('CRLF page indexes its sections', entries.some(e => e.section === 'Deep section' && e.href === '/docs/v1#deep-section' && e.content === 'Far down the page.'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+})();
+
 const total = pass + failures.length;
 console.log(`\n  Security suite: ${pass}/${total} passed`);
 if (failures.length) {
