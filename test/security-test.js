@@ -188,6 +188,16 @@ ok('bare embed does not swallow up to a later endembed', (h => h.includes('text 
 ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class="side-links" aria-label="Site links"><a href="\/static\/downloads\/latest\.pdf" target="_blank" rel="noopener">PDF<\/a><\/nav>/.test(
   renderShell({ config: { nav: [{ label: 'PDF', href: '/static/downloads/latest.pdf' }] }, versions: ['v1'], page: null, assetsVer: '1' })));
 
+// ── A page rendered into the shell: escaped, and rebased under a sub-path ───
+(() => {
+  const evil = '</title></script><script>alert(1)</script>';
+  const page = { title: evil, description: evil, version: 'v1', slug: 'x', html: '<p><a href="/docs/v1/y">y</a> <img src="/static/a.png"> <a href="//cdn.example/z">z</a> <a href="https://e.example/">e</a></p>' };
+  const h = renderShell({ config: {}, versions: ['v1'], page, assetsVer: '1', basePath: '/sub' });
+  ok('rendered page title and data cannot break out', !h.includes('<script>alert(1)</script>') && h.includes('id="page-data"'));
+  ok('rendered page links rebased under the sub-path', h.includes('href="/sub/docs/v1/y"') && h.includes('src="/sub/static/a.png"')
+    && h.includes('href="//cdn.example/z"') && h.includes('href="https://e.example/"'));
+})();
+
 // ── Includes, variables and drafts (a temp site, read through the engine) ───
 (() => {
   const fs = require('fs'), os = require('os');

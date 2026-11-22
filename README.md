@@ -176,12 +176,15 @@ includes of shared Markdown and of code regions from source files; config
 variables; draft pages; dark-mode image twins; `{% hint %}`-style tags
 accepted on import; relative `*.md` links rewritten to routes.
 
-**Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`);
+**Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`), its
+index downloaded on first use rather than with every page;
 dark/light mode (follows the OS); heading anchors; scroll-spy table of contents;
 breadcrumbs; previous/next; last-updated + reading time; image lightbox;
 back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 
-**Publishing**, per-page `<title>`/description/OpenGraph rendered server-side;
+**Publishing**, every page's content rendered into its HTML, so crawlers, link
+previews and readers without JavaScript get it; per-page
+`<title>`/description/OpenGraph rendered server-side;
 `sitemap.xml` + `robots.txt`; `/llms.txt` and `/llms-full.txt`; a page toolbar
 to copy or view the page as Markdown or open it in ChatGPT or Claude;
 configurable redirects.

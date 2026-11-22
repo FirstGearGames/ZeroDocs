@@ -51,7 +51,8 @@ let ver = BOOT.versions[0] || 'v1';
 let curSlug = '';
 let navTree = [];
 let flatNav = [];
-let searchIdx = [];
+let searchIdx = null;        // the version's search index, fetched on first use
+let searchPending = null;
 let searchSel = -1;
 let tocCleanup = null;
 let lastFocus = null;
@@ -105,7 +106,7 @@ function nav(href, push = true) {
   const versionChanged = target.version !== ver;
   ver = target.version;
   $('versel').value = ver;
-  if (versionChanged) { loadNav(ver); loadSearch(ver); }
+  if (versionChanged) { loadNav(ver); searchIdx = null; }
   loadPage(ver, target.slug, { hash: target.hash });
 }
 
@@ -296,8 +297,8 @@ function renderPage(d, v, slug, opts = {}) {
 
   /* content */
   const prose = $('prose');
-  prose.innerHTML = d.html;
-  if (BASE) {
+  if (d.html !== null) prose.innerHTML = d.html;     // null: already rendered into the HTML
+  if (BASE && d.html !== null) {
     // Doc HTML is rendered root-relative; prefix in-page internal links and
     // images with the base path when the site is served under a sub-path.
     prose.querySelectorAll('a[href^="/"], img[src^="/"], source[src^="/"]').forEach(el => {
@@ -490,10 +491,15 @@ function buildToc(prose) {
 }
 
 /* ── Search ───────────────────────────────────────────────────────────────── */
+/** Fetch the search index once, when search is first used, not with every page. */
 function loadSearch(v) {
-  return fetchJson(api.search(v))
-    .then(idx => { searchIdx = idx; })
-    .catch(() => { searchIdx = []; });
+  if (!searchPending) {
+    searchPending = fetchJson(api.search(v))
+      .then(idx => { if (v === ver) searchIdx = idx; })
+      .catch(() => { if (v === ver) searchIdx = []; })
+      .finally(() => { searchPending = null; });
+  }
+  return searchPending;
 }
 
 /** Rank an entry against space-separated terms; 0 = no match (AND semantics). */
@@ -535,6 +541,7 @@ function runSearch(query) {
   $('sinput').setAttribute('aria-activedescendant', '');
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) { box.innerHTML = ''; $('scount').textContent = ''; return; }
+  if (!searchIdx) { box.innerHTML = '<div class="sempty">Loading…</div>'; return; }
 
   const results = searchIdx
     .map(e => ({ e, score: scoreEntry(e, terms) }))
@@ -565,6 +572,7 @@ function runSearch(query) {
 function openSearch() {
   lastFocus = document.activeElement;
   $('smodal').classList.add('open');
+  if (!searchIdx) loadSearch(ver).then(() => { if ($('smodal').classList.contains('open')) runSearch($('sinput').value); });
   searchSel = -1;
   setTimeout(() => $('sinput').focus(), 40);
 }
@@ -578,6 +586,7 @@ function closeSearch() {
 }
 
 $('search-open').addEventListener('click', openSearch);
+$('search-open').addEventListener('pointerenter', () => { if (!searchIdx) loadSearch(ver); });   // warm it up
 $('smodal').addEventListener('click', e => { if (e.target === $('smodal')) closeSearch(); });
 $('sinput').addEventListener('input', e => runSearch(e.target.value));
 $('sinput').addEventListener('keydown', e => {
@@ -666,7 +675,8 @@ $('versel').addEventListener('change', async e => {
     } catch { /* fall back to the version root */ }
   }
   ver = v;
-  await Promise.all([loadNav(v), loadSearch(v)]);
+  searchIdx = null;
+  await loadNav(v);
   nav(target);
 });
 
@@ -678,7 +688,8 @@ if (!STATIC) try {
     try { msg = JSON.parse(e.data); } catch { return; }
     if (msg.type === 'hello') return;
     if (msg.type === 'config') { location.reload(); return; }
-    Promise.all([loadNav(ver), loadSearch(ver)]).then(() => loadPage(ver, curSlug, { silent: true, keepScroll: true }));
+    searchIdx = null;
+    loadNav(ver).then(() => loadPage(ver, curSlug, { silent: true, keepScroll: true }));
   };
 } catch { /* SSE unavailable, refresh manually */ }
 
@@ -687,7 +698,12 @@ if (!STATIC) try {
   const target = parseDocsPath(location.pathname + location.hash) || { version: ver, slug: '', hash: '' };
   ver = BOOT.versions.includes(target.version) ? target.version : ver;
   $('versel').value = ver;
-  await Promise.all([loadNav(ver), loadSearch(ver)]);
-  loadPage(ver, target.slug, { hash: target.hash });
+  await loadNav(ver);
+  /* A page rendered into the HTML is taken over in place, not fetched again. */
+  let rendered = null;
+  try { rendered = JSON.parse(($('page-data') || {}).textContent || 'null'); } catch { /* fetch it instead */ }
+  if (rendered && rendered.version === ver && rendered.slug === target.slug) {
+    renderPage({ ...rendered, html: null }, ver, target.slug, { hash: target.hash, keepScroll: !target.hash });
+  } else loadPage(ver, target.slug, { hash: target.hash });
 })();
 })();

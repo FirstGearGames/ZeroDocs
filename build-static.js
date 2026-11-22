@@ -93,7 +93,7 @@ function build() {
       write(path.join(outDir, 'data', v, 'doc', 'index.json'), JSON.stringify(rootPayload));
       const rawRoot = contentLib.getRawPage(site, v, '');
       if (rawRoot !== null) write(path.join(outDir, 'data', v, 'raw', 'index.md'), rawRoot);
-      write(path.join(outDir, 'docs', v, 'index.html'), shell({ title: rootPayload.title, description: rootPayload.description }));
+      write(path.join(outDir, 'docs', v, 'index.html'), shell(rootPayload));
       pageCount++;
     } else {
       write(path.join(outDir, 'docs', v, 'index.html'), shell(null));
@@ -107,7 +107,7 @@ function build() {
       write(path.join(outDir, 'data', v, 'doc', `${slug}.json`), JSON.stringify(payload));
       const raw = contentLib.getRawPage(site, v, slug);
       if (raw !== null) write(path.join(outDir, 'data', v, 'raw', `${slug}.md`), raw);
-      write(path.join(outDir, 'docs', v, slug, 'index.html'), shell({ title: payload.title, description: payload.description }));
+      write(path.join(outDir, 'docs', v, slug, 'index.html'), shell(payload));
       pageCount++;
     }
 

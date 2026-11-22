@@ -19,5 +19,7 @@ jobs:
         run: node test/security-test.js
       - name: Static build (example site)
         run: node build-static.js ./example-site
+      - name: Live site suite (static build and preview server over HTTP)
+        run: node test/site-test.js
       - name: Content tripwire (advisory)
         run: node scripts/content-scan.js ./example-site
