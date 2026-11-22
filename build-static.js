@@ -19,6 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const { createSite } = require('./lib/site');
 const { buildNav } = require('./lib/navigation');
@@ -28,8 +29,12 @@ const { renderShell, renderFavicon } = require('./lib/shell');
 const { publicUrl } = require('./lib/util');
 
 const ENGINE_DIR = __dirname;
-const pkg = (() => { try { return JSON.parse(fs.readFileSync(path.join(ENGINE_DIR, 'package.json'), 'utf8')); } catch { return {}; } })();
-const ASSETS_VER = process.env.DOCS_ASSETS_VER || String(pkg.version || Date.now());
+// Asset URLs carry a hash of the assets themselves, so any change to them is a
+// new URL: _headers caches /assets/* as immutable for a year.
+const ASSETS_VER = process.env.DOCS_ASSETS_VER || crypto.createHash('sha1')
+  .update(fs.readFileSync(path.join(ENGINE_DIR, 'assets', 'app.css')))
+  .update(fs.readFileSync(path.join(ENGINE_DIR, 'assets', 'app.js')))
+  .digest('hex').slice(0, 12);
 
 /** Write a file, creating parent directories as needed. */
 function write(outFile, data) {

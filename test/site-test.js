@@ -75,10 +75,13 @@ const prose = html => (html.match(/<div id="prose" class="prose">([\s\S]*?)<\/di
     const sitemap = await get(stat, '/sitemap.xml');
     ok('sitemap lists absolute URLs', sitemap.text.includes('<loc>https://firstgeargames.github.io/ZeroDocs/docs/v1/authoring/reuse</loc>'));
     const sw = await get(stat, '/sw.js');
-    const pkg = JSON.parse(fs.readFileSync(path.join(ENGINE, 'package.json'), 'utf8'));
+    const assetsHash = require('crypto').createHash('sha1')
+      .update(fs.readFileSync(path.join(ENGINE, 'assets', 'app.css'))).update(fs.readFileSync(path.join(ENGINE, 'assets', 'app.js')))
+      .digest('hex').slice(0, 12);
+    ok('asset URLs carry a hash of the assets, so a change is a new URL', reuse.text.includes(`/assets/app.css?v=${assetsHash}"`) && reuse.text.includes(`/assets/app.js?v=${assetsHash}"`));
     ok('static build serves its offline worker, precaching assets and the sidebar', sw.status === 200
-      && sw.text.includes(`const CACHE = "zerodocs-${pkg.version}";`)
-      && sw.text.includes(`"/assets/app.js?v=${pkg.version}"`) && sw.text.includes('"/data/v1/nav.json"'));
+      && sw.text.includes(`const CACHE = "zerodocs-${assetsHash}";`)
+      && sw.text.includes(`"/assets/app.js?v=${assetsHash}"`) && sw.text.includes('"/data/v1/nav.json"'));
     const precached = JSON.parse((sw.text.match(/const PRECACHE = (\[.*\]);/) || [])[1] || '[]');
     ok('every precached file exists in the build', precached.length > 0 && (await Promise.all(precached.map(u => get(stat, u)))).every(r => r.status === 200));
     const missing = await get(stat, '/docs/v1/no-such-page/');
