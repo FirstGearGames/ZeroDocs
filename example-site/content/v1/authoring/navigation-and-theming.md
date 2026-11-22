@@ -90,8 +90,6 @@ layout: landing
 ---
 ```
 
-**Preview:** this demo's [home page](/docs/v1) uses `landing`.
-
 ## Glossary
 
 Define terms once in `docs.config.json`, and the first use of each on a page

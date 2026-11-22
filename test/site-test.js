@@ -73,7 +73,6 @@ const prose = html => (html.match(/<div id="prose" class="prose">([\s\S]*?)<\/di
     const code = await get(stat, '/docs/v1/authoring/code/');
     ok('static code page carries marked lines', prose(code.text).includes('<span class="ln ln-ins">') && prose(code.text).includes('<span class="ln ln-hl">'));
     const home = await get(stat, '/docs/v1/');
-    ok('static landing page carries its layout', home.text.includes('<body data-layout="landing">'));
     ok('static version landing page carries its content', prose(home.text).length > 200 && pageData(home.text).slug === '');
     ok('static page links its public address', reuse.text.includes('<link rel="canonical" href="https://firstgeargames.github.io/ZeroDocs/docs/v1/authoring/reuse"/>'));
     const sitemap = await get(stat, '/sitemap.xml');
