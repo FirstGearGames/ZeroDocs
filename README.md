@@ -172,8 +172,9 @@ alignment; fenced code with built-in highlighting (~20 languages, no CDN) and
 titles; callouts (three syntaxes); tabs (synced and remembered); cards,
 nav/ref/file cards, buttons, badges, steps, grids, keyboard keys, field tables;
 video embeds (YouTube/Vimeo); page references; collapsible sections;
-`{% hint %}`-style tags accepted on import; relative `*.md` links rewritten to
-routes.
+includes of shared Markdown and of code regions from source files; config
+variables; draft pages; dark-mode image twins; `{% hint %}`-style tags
+accepted on import; relative `*.md` links rewritten to routes.
 
 **Reading**, full-text **section-level** search (`Ctrl K` / `⌘K` / `/`);
 dark/light mode (follows the OS); heading anchors; scroll-spy table of contents;
@@ -225,6 +226,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `footer` | Footer. String, or `{ "text", "links": [{ "label", "href" }] }`. |
 | `redirects` | `{ "/docs/v1/old": "/docs/v1/new" }`, served as 301s (same-origin only). |
 | `theme` | Colors: `primary`, `primaryDark`, `success`, `info`, `warning`, `danger`, `sidebar`, `sidebarDark`. |
+| `variables` | `{ "version": "2.4.1" }`: each `{{name}}` in a page becomes its value, code blocks included. See [AUTHORING.md](AUTHORING.md#includes-and-variables). |
 
 A site ships its own favicon by putting `favicon.svg`/`.ico`/`.png` in
 `static/`; otherwise a letter tile is generated from the title.

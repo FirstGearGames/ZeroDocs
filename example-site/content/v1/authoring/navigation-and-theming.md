@@ -56,6 +56,19 @@ Set one with `"tag": "Beta"` in `_meta.json`, or `tag: Beta` in a page's
 frontmatter (the **Live** pill on the [Overview](/docs/v1/authoring) page is a
 frontmatter tag).
 
+## Draft pages
+
+Set `draft: true` in a page's frontmatter to work on it before publishing. The
+preview server shows the page with a **Draft** tag. The static build leaves it
+out entirely, along with its sidebar entry, search results, and sitemap entry.
+
+```markdown
+---
+title: "Upcoming feature"
+draft: true
+---
+```
+
 ## Versions
 
 Each sub-folder of `content/` is a version. List them in `docs.config.json`;

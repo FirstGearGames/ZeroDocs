@@ -7,5 +7,6 @@
   { "slug": "cards-and-buttons", "title": "Cards & Buttons" },
   { "slug": "components", "title": "Components", "tag": "New" },
   { "slug": "tabs-and-media", "title": "Tabs & Media" },
+  { "slug": "reuse", "title": "Includes & Variables", "tag": "New" },
   { "slug": "navigation-and-theming", "title": "Navigation & Theming" }
 ]

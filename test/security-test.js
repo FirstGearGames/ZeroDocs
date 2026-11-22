@@ -188,6 +188,60 @@ ok('bare embed does not swallow up to a later endembed', (h => h.includes('text 
 ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class="side-links" aria-label="Site links"><a href="\/static\/downloads\/latest\.pdf" target="_blank" rel="noopener">PDF<\/a><\/nav>/.test(
   renderShell({ config: { nav: [{ label: 'PDF', href: '/static/downloads/latest.pdf' }] }, versions: ['v1'], page: null, assetsVer: '1' })));
 
+// ── Includes, variables and drafts (a temp site, read through the engine) ───
+(() => {
+  const fs = require('fs'), os = require('os');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ztest-'));
+  const root = path.join(dir, 'site');
+  const put = (rel, text) => { fs.mkdirSync(path.dirname(path.join(root, rel)), { recursive: true }); fs.writeFileSync(path.join(root, rel), text); };
+  try {
+    fs.writeFileSync(path.join(dir, 'outside.txt'), 'OUTSIDE-SECRET');
+    put('.git/config', 'token=GIT-SECRET');
+    put('docs.config.json', JSON.stringify({ variables: { version: '1.2.3' } }));
+    put('content/v1/index.md', '# Home\n\n:::include ./_shared/note.md\n\nVersion {{ version }} and {{unknown}}.\n\n'
+      + ':::include /snippets/Spawner.cs#spawn title="Spawner.cs"\n\n```md\n:::include ./_shared/note.md\n```\n');
+    put('content/v1/_shared/note.md', '---\ntitle: Shared\n---\nShared **note** {{version}}.\n');
+    put('snippets/Spawner.cs', 'class A {\n    #region spawn\n    void Spawn() {\n        #region inner\n        Go();\n        #endregion\n    }\n    #endregion\n}\n');
+    put('content/v1/draft.md', '---\ntitle: Secret draft\ndraft: true\n---\nDraft body.\n');
+    put('content/v1/evil.md', ':::include ../../../outside.txt\n\n:::include /.git/config\n\n:::include ./evil.md\n\n:::include /snippets/Spawner.cs#missing\n');
+    put('static/shot.png', 'png');
+    put('static/shot.dark.png', 'png');
+    put('static/plain.png', 'png');
+    put('content/v1/images.md', '![Shot](/static/shot.png "Cap")\n\n:::card\n![Card shot](/static/shot.png)\n:::\n\n![Plain](/static/plain.png)\n');
+    const { createSite } = require(LIB + '/site');
+    const contentLib = require(LIB + '/content');
+    const { buildSearchIndex } = require(LIB + '/search');
+    const site = createSite(root);
+    const text = html => html.replace(/<[^>]+>/g, '');
+
+    const home = contentLib.buildDocPayload(site, site.loadConfig(), 'v1', '').html;
+    ok('include inlines a Markdown file without its frontmatter', home.includes('Shared <strong>note</strong> 1.2.3.') && !home.includes('title: Shared'));
+    ok('variables substitute, undefined names stay as written', home.includes('Version 1.2.3 and {{unknown}}.'));
+    ok('include pulls a code region, dedented, markers dropped', text(home).includes('void Spawn() {\n    Go();\n}') && !home.includes('#region') && home.includes('data-title="Spawner.cs"'));
+    ok('an include line inside a code fence stays literal', text(home).includes(':::include ./_shared/note.md'));
+    ok('raw page carries the expanded text', contentLib.getRawPage(site, 'v1', '').includes('Shared **note** 1.2.3.'));
+
+    const evil = contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'evil').html;
+    ok('include outside the site folder refused', evil.includes('outside the site folder') && !evil.includes('OUTSIDE-SECRET'));
+    ok('include of a dot-folder file refused', evil.includes('it is a hidden file') && !evil.includes('GIT-SECRET'));
+    ok('self-include refused', evil.includes('it includes itself'));
+    ok('missing region reported', evil.includes('it has no region &quot;missing&quot;'));
+
+    ok('draft left out of a build', contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'draft') === null
+      && !contentLib.listPages(site, 'v1').some(p => p.title === 'Secret draft')
+      && !buildNav(site, 'v1').some(n => n.title === 'Secret draft')
+      && !buildSearchIndex(site, 'v1').some(e => e.title === 'Secret draft'));
+    const images = contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'images').html;
+    ok('image with a .dark twin ships both, theme-classed', (images.match(/class="md-img img-light" src="\/static\/shot\.png"/g) || []).length === 2
+      && (images.match(/class="md-img img-dark" src="\/static\/shot\.dark\.png"/g) || []).length === 2);
+    ok('image without a twin renders alone', images.includes('<img class="md-img" src="/static/plain.png"') && !images.includes('plain.dark'));
+
+    const preview = createSite(root, { drafts: true });
+    ok('draft shown, tagged, on the preview server', (contentLib.buildDocPayload(preview, preview.loadConfig(), 'v1', 'draft') || {}).tag === 'Draft'
+      && buildNav(preview, 'v1').some(n => n.title === 'Secret draft'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+})();
+
 const total = pass + failures.length;
 console.log(`\n  Security suite: ${pass}/${total} passed`);
 if (failures.length) {

@@ -26,6 +26,8 @@
     ]
   },
 
+  "variables": { "version": "2.0.0" },
+
   "theme": {
     "primary": "#2563eb",
     "primaryDark": "#7db8f7",

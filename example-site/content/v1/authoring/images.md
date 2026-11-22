@@ -133,4 +133,19 @@ cover-position: center
 ---
 ~~~
 
+## Dark-mode images
+
+Put a `.dark` twin beside an image in `static/` (here `theme-demo.dark.svg`
+beside `theme-demo.svg`) and the dark theme shows it instead. The Markdown
+doesn't change, and the twin only downloads when the dark theme is on. Flip the
+theme toggle in the header to see this one switch.
+
+~~~markdown
+![Theme demo](/static/theme-demo.svg)
+~~~
+
+Preview:
+
+![Theme demo](/static/theme-demo.svg)
+
 Next: [Components](./components.md).

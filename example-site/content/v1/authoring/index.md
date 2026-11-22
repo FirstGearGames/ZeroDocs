@@ -34,6 +34,8 @@ Cards, card rows, nav/ref/file cards, buttons, and link buttons.
 Steps, badges, keyboard keys, field tables, announcement bar, footer.
 [book-open|Tabs & Media|/docs/v1/authoring/tabs-and-media]
 Tabs, accordions, videos, embeds, and page references.
+[link|Includes & Variables|/docs/v1/authoring/reuse]
+Shared Markdown, code pulled from source files, and config values.
 [settings|Navigation & Theming|/docs/v1/authoring/navigation-and-theming]
 Sidebar control, versions, page metadata, and colors.
 :::
@@ -60,6 +62,7 @@ tag: Live
 | `cover` | Edge-to-edge cover image with a fixed aspect ratio. |
 | `cover-position` | Focal point for the cover, e.g. `center top`. |
 | `tag` | Small pill next to the title (the **Live** pill above). |
+| `draft` | `true` keeps the page out of the static build; the preview server shows it tagged **Draft**. |
 
 **Preview:** the banner, sub-title, and tag at the top of this page are all
 produced by the frontmatter shown above.

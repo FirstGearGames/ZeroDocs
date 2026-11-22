@@ -35,7 +35,7 @@ const { checkLinks } = require('./lib/content');
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || '127.0.0.1';
 
-const site = createSite();
+const site = createSite(undefined, { drafts: true });
 const pkg = (() => {
   try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')); } catch { return {}; }
 })();

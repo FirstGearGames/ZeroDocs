@@ -85,7 +85,9 @@ header {
 }
 .logo-img { width: 30px; height: 30px; border-radius: 7px; object-fit: contain; flex-shrink: 0; --logo-border: var(--logo-border-light); }
 html.dark .logo-img { --logo-border: var(--logo-border-dark); }
-html:not(.dark) .logo-img-dark, html.dark .logo-img-light { display: none; }
+/* Theme twins: a logo, or a page image with a .dark file beside it, ship both; one shows. */
+html:not(.dark) .logo-img-dark, html.dark .logo-img-light,
+html:not(.dark) .img-dark, html.dark .img-light { display: none; }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
 /* The header links' drawer copy: shown only where the header hides them (≤900px). */
 .side-links { display: none; }

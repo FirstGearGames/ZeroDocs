@@ -64,6 +64,7 @@ tag: New
 | `banner` | Full-width image rendered above the title. Use a `/static/…` path or any URL. |
 | `cover` / `cover-position` | Cover image and its focal position. |
 | `tag` | Small pill next to the title (e.g. `New`, `Beta`). |
+| `draft` | `true` keeps the page out of the static build, sidebar, search and sitemap. The preview server still shows it, tagged **Draft**. |
 
 ## Sidebar control, `_meta.json`
 
@@ -109,7 +110,8 @@ Two conveniences worth knowing:
   GitHub work on the site.
 - **Code fences protect everything.** Directive syntax, `{% %}` tags, and
   emoji shortcodes inside a fence render as written, you can document the
-  engine's own syntax.
+  engine's own syntax. Variables are the one exception: `{{name}}` fills in
+  inside code blocks too (see [Includes and variables](#includes-and-variables)).
 
 ## Code blocks
 
@@ -322,6 +324,10 @@ See the live [Images showcase](/docs/v1/authoring/images) for previews.
 :::
 ```
 
+**Dark-mode twins**: put `pic.dark.png` beside `pic.png` in `static/` and the
+dark theme shows it in place of `pic.png`. The Markdown doesn't change, and
+the twin only downloads when the dark theme is on.
+
 **Banners and covers** are page frontmatter: `banner:` renders full-width above
 the title, `cover:` (+ optional `cover-position:`) is edge-to-edge at the very
 top. Readers can click any content image to zoom it in a lightbox.
@@ -356,6 +362,41 @@ The site name shown in the header.
 ```
 A parameter entry, `name`, `type`, `default`, and a bare `required` flag with a
 Markdown description. Stack several for an API reference.
+
+## Includes and variables
+
+**Include a shared Markdown file** where a block should appear. The path is
+relative to the page, or to the site folder when it starts with `/`:
+
+```markdown
+:::include ./_shared/install-steps.md
+```
+
+The file's frontmatter is dropped and its own includes expand. Files and
+folders starting with `_` never become pages, so `_shared/` is a good home.
+
+**Include code from a source file**, whole or one region of it. Mark the region
+with `#region <name>` and `#endregion` in the language's comment style. The
+extension sets the language, and the rest of the line becomes the code block's
+info, such as a title:
+
+```markdown
+:::include /snippets/Spawner.cs#spawn title="Spawner.cs"
+```
+
+Keep samples inside the site folder, for example in `snippets/`. An include
+can't read outside the site folder, or a file or folder whose name starts with
+`.`. A missing or refused include renders as a red callout.
+
+**Variables** come from `docs.config.json` and fill `{{name}}` anywhere in a
+page, code blocks and frontmatter included:
+
+```json
+"variables": { "version": "2.4.1" }
+```
+
+A name the config doesn't define stays as written. `\{{name}}`, with a leading
+backslash, prints the braces of a defined name instead of its value.
 
 ## Static assets
 
