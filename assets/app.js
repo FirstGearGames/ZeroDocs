@@ -130,7 +130,7 @@ function loadNav(v) {
     .then(tree => {
       navTree = tree;
       flatNav = flattenNav(tree);
-      renderNav(navTree, $('navtree'), stripBase(location.pathname));
+      drawNav();
     })
     .catch(() => { $('navtree').innerHTML = '<div class="sep">Navigation unavailable</div>'; });
 }
@@ -142,7 +142,27 @@ function flattenNav(items) {
   });
 }
 
-function renderNav(items, container, curPath) {
+/** The sidebar, narrowed to pages whose title holds the filter box's text. */
+function drawNav() {
+  const q = $('navfilter').value.trim().toLowerCase();
+  const keep = items => items.flatMap(it => {
+    if (it.type === 'separator') return [];
+    if (String(it.title || '').toLowerCase().includes(q)) return [it];
+    const kids = it.children ? keep(it.children) : [];
+    return kids.length ? [{ ...it, children: kids }] : [];
+  });
+  const items = q ? keep(navTree) : navTree;
+  renderNav(items, $('navtree'), stripBase(location.pathname), !!q);
+  if (q && !items.length) $('navtree').innerHTML = '<div class="sep">No pages match</div>';
+}
+$('navfilter').addEventListener('input', drawNav);
+$('navfilter').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { const first = $('navtree').querySelector('a.ni'); if (first) first.click(); }
+  if (e.key === 'Escape') { e.stopPropagation(); e.target.value = ''; drawNav(); }
+});
+
+/** forceOpen: every folder open (while filtering), without touching the saved state. */
+function renderNav(items, container, curPath, forceOpen = false) {
   container.innerHTML = '';
   items.forEach(item => {
     if (item.type === 'separator') {
@@ -157,7 +177,7 @@ function renderNav(items, container, curPath) {
 
     if (item.children && item.children.length) {
       const saved = navOpen[item.href || ''];
-      const isOpen = saved !== undefined ? saved === 1 : (item.defaultOpen || curPath.startsWith(item.href || '\0'));
+      const isOpen = forceOpen ? true : saved !== undefined ? saved === 1 : (item.defaultOpen || curPath.startsWith(item.href || '\0'));
 
       const row = document.createElement('div');
       row.className = 'ni-row';
@@ -177,7 +197,7 @@ function renderNav(items, container, curPath) {
       nc.className = 'nc' + (isOpen ? ' open' : '');
       const inner = document.createElement('div');
       nc.appendChild(inner);
-      renderNav(item.children, inner, curPath);
+      renderNav(item.children, inner, curPath, forceOpen);
 
       const setOpen = open => {
         nc.classList.toggle('open', open);
@@ -228,7 +248,15 @@ function toggleDrawer(force) {
   document.body.classList.toggle('drawer-open', open);
 }
 const closeDrawer = () => toggleDrawer(false);
-$('hbg').addEventListener('click', () => toggleDrawer());
+/* The same button collapses the sidebar on wide screens, remembered, applied before paint by the shell. */
+const wide = () => matchMedia('(min-width: 901px)').matches;
+const syncMenuButton = () => $('hbg').setAttribute('aria-expanded', String(wide() ? !document.documentElement.classList.contains('nav-collapsed') : $('sidebar').classList.contains('open')));
+$('hbg').addEventListener('click', () => {
+  if (!wide()) { toggleDrawer(); return; }
+  store.set('docs:navcollapsed', document.documentElement.classList.toggle('nav-collapsed') ? '1' : '');
+  syncMenuButton();
+});
+syncMenuButton();
 $('sovl').addEventListener('click', closeDrawer);
 
 /* ── Page rendering ───────────────────────────────────────────────────────── */
@@ -246,8 +274,23 @@ async function loadPage(v, slug, opts = {}) {
   }
 }
 
+/**
+ * "Report an issue" link for a page, on any site that names its GitHub repo:
+ * a new issue on `github.issues` (when set) or `<github.repo>/issues/new`,
+ * prefilled with the page title and address. '' when the site names neither.
+ */
+function issueUrl(title) {
+  const gh = CONFIG.github || {};
+  const base = gh.issues ? safeHref(gh.issues) : (gh.repo ? `${safeHref(gh.repo).replace(/\/+$/, '')}/issues/new` : '');
+  if (!/^https?:\/\//i.test(base)) return '';
+  const page = (CONFIG.url ? String(CONFIG.url).replace(/\/+$/, '') + stripBase(location.pathname) : location.origin + location.pathname);
+  const body = `Page: ${page}\n\nWhat is wrong or missing:\n`;
+  return `${base}${base.includes('?') ? '&' : '?'}title=${encodeURIComponent(`Docs: ${title}`)}&body=${encodeURIComponent(body)}`;
+}
+
 /* Page-action toolbar icons (brand marks from Simple Icons, CC0). */
 const PA_ICONS = {
+  issue: '<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4"/><path d="M4 4h12l-2 4 2 4H4"/></svg>',
   copy: '<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   check: '<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
   markdown: '<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15V9l2.5 2.5L11 9v6"/><path d="M15.5 9v6m-2.5-2.5 2.5 2.5 2.5-2.5"/></svg>',
@@ -308,20 +351,26 @@ function renderPage(d, v, slug, opts = {}) {
       if (val && val[1] !== '/' && !val.startsWith(BASE + '/')) el.setAttribute(attr, BASE + val);
     });
   }
+  document.body.dataset.layout = d.layout || '';
   enhanceCodeBlocks(prose);
   applySavedTabs(prose);
   buildToc(prose);
+  applyGlossary(prose);
+  stickTableHeaders(prose);
   syncSearchHighlights();
 
   /* page actions (breadcrumb row) + edit link (bottom) */
   const rawUrl = new URL(api.raw(v, slug), location.href).href;
   const ask = encodeURIComponent(`Read ${rawUrl} so I can ask questions about it.`);
+  const issue = issueUrl(d.title);
   $('edittop').innerHTML = `<div class="page-actions">
     <button class="pa-btn" id="copy-page" type="button" aria-label="Copy page as Markdown">${PA_ICONS.copy}</button>
     <a class="pa-btn" href="${esc(rawUrl)}" target="_blank" rel="noopener" aria-label="View as Markdown">${PA_ICONS.markdown}</a>
     <span class="pa-sep" aria-hidden="true"></span>
     <a class="pa-btn" href="https://chatgpt.com/?q=${ask}" target="_blank" rel="noopener" aria-label="Open in ChatGPT">${PA_ICONS.chatgpt}</a>
-    <a class="pa-btn" href="https://claude.ai/new?q=${ask}" target="_blank" rel="noopener" aria-label="Open in Claude">${PA_ICONS.claude}</a>
+    <a class="pa-btn" href="https://claude.ai/new?q=${ask}" target="_blank" rel="noopener" aria-label="Open in Claude">${PA_ICONS.claude}</a>${issue ? `
+    <span class="pa-sep" aria-hidden="true"></span>
+    <a class="pa-btn" href="${esc(issue)}" target="_blank" rel="noopener" aria-label="Report an issue with this page">${PA_ICONS.issue}</a>` : ''}
   </div>`;
   const updated = d.lastUpdated ? new Date(d.lastUpdated) : null;
   const footer = (d.editUrl
@@ -377,6 +426,7 @@ function renderPage(d, v, slug, opts = {}) {
 
 function renderNotFound(v, slug, isError) {
   document.title = `Page not found | ${CONFIG.title || 'Docs'}`;
+  document.body.dataset.layout = '';
   $('ptitle').textContent = '';
   $('psubtitle').style.display = 'none';
   $('page-cover').style.display = 'none';
@@ -418,6 +468,8 @@ function legacyCopy(text) {
   ta.remove();
 }
 
+const FOLD_LINES = 25;      // a block this long shows folded (app.css sizes the fold to match)
+
 function enhanceCodeBlocks(root) {
   root.querySelectorAll('pre').forEach(pre => {
     const code = pre.querySelector('code');
@@ -441,6 +493,17 @@ function enhanceCodeBlocks(root) {
       setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
     });
     pre.appendChild(btn);
+    /* A long block folds to its first lines until the reader asks for the rest. */
+    const lines = code.textContent.split('\n').length;
+    if (lines > FOLD_LINES + 5) {
+      pre.classList.add('fold');
+      const more = document.createElement('button');
+      more.className = 'fold-btn';
+      more.type = 'button';
+      more.textContent = `Show all ${lines} lines`;
+      more.addEventListener('click', () => { pre.classList.remove('fold'); more.remove(); });
+      pre.appendChild(more);
+    }
   });
 }
 
@@ -643,6 +706,55 @@ function markHits(root, terms) {
     node.replaceWith(frag);
   }
 }
+
+/* ── Glossary: a term's first use on a page shows its definition ─────────── */
+const GLOSSARY = new Map(Object.entries(CONFIG.glossary || {})
+  .filter(([term, def]) => term.trim() && typeof def === 'string')
+  .map(([term, def]) => [term.trim().toLowerCase(), def]));
+const GLOSSARY_RE = GLOSSARY.size
+  ? new RegExp(`\\b(?:${[...GLOSSARY.keys()].sort((a, b) => b.length - a.length).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'gi')
+  : null;
+
+function applyGlossary(root) {
+  if (!GLOSSARY_RE) return;
+  const left = new Set(GLOSSARY.keys());
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.parentElement.closest('a, code, pre, h1, h2, h3, h4, h5, h6, button, .gloss') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  for (let node of nodes) {
+    while (node && left.size) {
+      GLOSSARY_RE.lastIndex = 0;
+      let m;
+      while ((m = GLOSSARY_RE.exec(node.nodeValue)) && !left.has(m[0].toLowerCase())) { /* used already on this page */ }
+      if (!m) break;
+      const key = m[0].toLowerCase();
+      left.delete(key);
+      const term = document.createElement('span');
+      term.className = 'gloss';
+      term.tabIndex = 0;
+      term.dataset.def = GLOSSARY.get(key);
+      term.setAttribute('aria-label', `${m[0]}: ${GLOSSARY.get(key)}`);
+      term.textContent = m[0];
+      const rest = node.splitText(m.index);
+      rest.nodeValue = rest.nodeValue.slice(m[0].length);
+      rest.before(term);
+      node = rest;
+    }
+  }
+}
+
+/* ── Tables: headers stay in view while a table that fits the page scrolls by ── */
+function stickTableHeaders(root) {
+  // A scrolling wrapper would pin the header inside itself, so only a table
+  // that fits (no sideways scroll needed) drops its wrapper's overflow.
+  root.querySelectorAll('.table-wrap').forEach(w => {
+    w.classList.remove('fits');
+    w.classList.toggle('fits', w.scrollWidth <= w.clientWidth);
+  });
+}
+window.addEventListener('resize', () => stickTableHeaders($('prose')), { passive: true });
 
 function openSearch() {
   lastFocus = document.activeElement;

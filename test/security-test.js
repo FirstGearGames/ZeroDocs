@@ -198,6 +198,26 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
     && h.includes('href="//cdn.example/z"') && h.includes('href="https://e.example/"'));
 })();
 
+// ── Member tables and code line marks ───────────────────────────────────────
+(() => {
+  const t = md('| Member | Meaning |\n|---|---|\n| `IsServer` | a |\n| plain | b |\n| `IsServer` | again |\n');
+  ok('a row led by code gets its own anchor and link', t.includes('<tr id="isserver"><td><code>IsServer</code><a class="hanchor" href="#isserver"'));
+  ok('a row led by text gets none; repeated names stay unique', t.includes('<tr><td>plain</td>') && t.includes('<tr id="isserver-2">'));
+  const c = md('```cs {2}\nint a = 1; /* multi\nline */ int b = 2;\nGo(); // [!code ++]\nOld(); // [!code --]\n```\n');
+  ok('code lines marked by spec and by trailing comments', (c.match(/<span class="ln[^"]*">/g) || []).join() === '<span class="ln">,<span class="ln ln-hl">,<span class="ln ln-ins">,<span class="ln ln-del">');
+  ok('mark comments leave the rendered code', !c.includes('[!code'));
+  ok('a token spanning lines is closed and reopened per line', c.includes('/* multi</span></span>\n<span class="ln ln-hl"><span class="tk-cmt">line */</span>'));
+  ok('a Markdown fence keeps marks as written', md('~~~markdown\nGo(); // [!code ++]\n~~~\n').includes('[!code ++]'));
+  ok('a line spec alone is not a language', !md('```{1}\nx\n```\n').includes('data-lang'));
+  ok('plain code blocks are untouched', !md('```js\nlet a = 1;\n```\n').includes('class="ln'));
+})();
+
+// ── Page layouts ────────────────────────────────────────────────────────────
+(() => {
+  const page = layout => renderShell({ config: {}, versions: ['v1'], page: { title: 'T', version: 'v1', slug: '', html: '', layout }, assetsVer: '1' });
+  ok('a page layout reaches the body', page('landing').includes('<body data-layout="landing">') && page('').includes('<body>'));
+})();
+
 // ── Link previews: canonical and image URLs made absolute by config.url ─────
 (() => {
   const page = { title: 'T', version: 'v1', slug: 'a/b', html: '' };
@@ -224,6 +244,8 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
       + ':::include /snippets/Spawner.cs#spawn title="Spawner.cs"\n\n```md\n:::include ./_shared/note.md\n```\n');
     put('content/v1/_shared/note.md', '---\ntitle: Shared\n---\nShared **note** {{version}}.\n');
     put('snippets/Spawner.cs', 'class A {\n    #region spawn\n    void Spawn() {\n        #region inner\n        Go();\n        #endregion\n    }\n    #endregion\n}\n');
+    put('content/v1/wide.md', '---\nlayout: wide\n---\nx\n');
+    put('content/v1/odd.md', '---\nlayout: "><script>\n---\nx\n');
     put('content/v1/draft.md', '---\ntitle: Secret draft\ndraft: true\n---\nDraft body.\n');
     put('content/v1/evil.md', ':::include ../../../outside.txt\n\n:::include /.git/config\n\n:::include ./evil.md\n\n:::include /snippets/Spawner.cs#missing\n');
     put('static/shot.png', 'png');
@@ -257,6 +279,9 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
     ok('image with a .dark twin ships both, theme-classed', (images.match(/class="md-img img-light" src="\/static\/shot\.png"/g) || []).length === 2
       && (images.match(/class="md-img img-dark" src="\/static\/shot\.dark\.png"/g) || []).length === 2);
     ok('image without a twin renders alone', images.includes('<img class="md-img" src="/static/plain.png"') && !images.includes('plain.dark'));
+
+    ok('frontmatter layout reaches the payload, only the known ones', contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'wide').layout === 'wide'
+      && contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'odd').layout === '');
 
     const preview = createSite(root, { drafts: true });
     ok('draft shown, tagged, on the preview server', (contentLib.buildDocPayload(preview, preview.loadConfig(), 'v1', 'draft') || {}).tag === 'Draft'

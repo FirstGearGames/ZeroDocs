@@ -65,6 +65,7 @@ tag: New
 | `cover` / `cover-position` | Cover image and its focal position. |
 | `tag` | Small pill next to the title (e.g. `New`, `Beta`). |
 | `image` | Link-preview image for this page, in place of the site's `image`. |
+| `layout` | `wide` drops the "On this page" list for the full width; `landing` is a home page: no sidebar on wide screens, no contents list or breadcrumb, a large centred title. |
 | `draft` | `true` keeps the page out of the static build, sidebar, search and sitemap. The preview server still shows it, tagged **Draft**. |
 
 ## Sidebar control, `_meta.json`
@@ -102,7 +103,9 @@ indentation**), task lists (`- [ ]` / `- [x]`), tables (**column alignment**
 via `:---`, `:---:`, `---:`), links, images, `inline code`, fenced code
 blocks, blockquotes, `~~strikethrough~~`, and `<https://…>` autolinks.
 Headings get ids, hover **anchor links**, and populate the "On this page"
-table of contents, which folds under the page title on narrow screens. External links open in a new tab with an `↗` marker.
+table of contents, which folds under the page title on narrow screens. A
+table row whose first cell starts with `code` gets its own link
+(`#isserver` for `` `IsServer` ``), and a long table keeps its header in view. External links open in a new tab with an `↗` marker.
 
 Two conveniences worth knowing:
 
@@ -126,7 +129,10 @@ The language tag drives built-in syntax highlighting (JS/TS, Python, C#,
 Java, C/C++, Go, Rust, JSON, YAML, TOML/INI, Bash, PowerShell, SQL, HTML/XML,
 CSS, diff, Markdown, unknown languages render plain). `title="…"` adds a
 filename header. Every block gets a copy button; use `diff` to mark
-added/removed lines. Use `text` (or `raw`) for content that should not be
+added/removed lines. `{2,4-5}` after the language highlights those lines, and a
+trailing `[!code ++]`, `[!code --]` or `[!code highlight]` comment marks its
+own line in any language (the comment never shows). A block over 30 lines
+folds to its first 25 behind a **Show all** button. Use `text` (or `raw`) for content that should not be
 highlighted, logs, output, or plain data.
 
 **Fences nest, so you can show fence source.** A fence may be opened with 3+

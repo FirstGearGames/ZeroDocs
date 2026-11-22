@@ -175,7 +175,9 @@ alignment; fenced code with built-in highlighting (~20 languages, no CDN) and
 titles; callouts (three syntaxes); tabs (synced and remembered); cards,
 nav/ref/file cards, buttons, badges, steps, grids, keyboard keys, field tables;
 video embeds (YouTube/Vimeo); page references; collapsible sections;
-includes of shared Markdown and of code regions from source files; config
+highlighted and added/removed code lines; long code blocks folded; linkable
+table rows; page layouts (`wide`, `landing`); a glossary; includes of shared
+Markdown and of code regions from source files; config
 variables; draft pages; dark-mode image twins; `{% hint %}`-style tags
 accepted on import; relative `*.md` links rewritten to routes.
 
@@ -184,7 +186,8 @@ index downloaded on first use rather than with every page, results grouped by
 page and filterable by top-level section (`Tab` steps through them), and the
 page highlighting the query for as long as it stays in the search box;
 dark/light mode (follows the OS); heading anchors; scroll-spy table of contents
-(folded under the title on narrow screens);
+(folded under the title on narrow screens); a sidebar filter box, and a
+sidebar you can collapse on wide screens;
 breadcrumbs; previous/next; last-updated + reading time; image lightbox;
 back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 
@@ -192,7 +195,8 @@ back-to-top; styled 404; keyboard accessible throughout; print stylesheet.
 previews and readers without JavaScript get it; per-page
 `<title>`/description/OpenGraph rendered server-side;
 `sitemap.xml` + `robots.txt`; `/llms.txt` and `/llms-full.txt`; a page toolbar
-to copy or view the page as Markdown or open it in ChatGPT or Claude;
+to copy or view the page as Markdown, open it in ChatGPT or Claude, or report
+an issue with it;
 configurable redirects.
 
 ## Security
@@ -231,12 +235,14 @@ documented in [SECURITY.md](SECURITY.md).
 | `logoDark` | Optional logo shown in the dark theme; `logo` is then shown only in the light theme. Follows the OS preference and the theme toggle. |
 | `versions` | Preferred display order of version folders. |
 | `defaultVersion` | The version `/` redirects to. |
-| `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links. Omit to hide them. |
+| `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links, and a **Report an issue** button that opens a prefilled issue on the repo. Omit to hide them. |
+| `github.issues` | Where Report an issue goes when issues live elsewhere, e.g. `https://github.com/you/repo/issues/new`; enough for the button on its own. |
 | `nav` | Header links: `[{ "label": "…", "href": "…" }]`. Add `"button": true` to draw a link as a button. The static build writes the whole version as one Markdown file to `/static/downloads/latest.md` (and `<version>.md`); a nav link ending in `.md` downloads instead of opening. |
 | `announcement` | Site-wide bar. String, or `{ "text", "href", "dismissible" }`. Without `href`, the text may hold inline Markdown links. |
 | `footer` | Footer. String, or `{ "text", "links": [{ "label", "href" }] }`. |
 | `redirects` | `{ "/docs/v1/old": "/docs/v1/new" }`, served as 301s (same-origin only). |
 | `theme` | Colors: `primary`, `primaryDark`, `success`, `info`, `warning`, `danger`, `sidebar`, `sidebarDark`. |
+| `glossary` | `{ "term": "definition" }`: a term's first use on each page shows its definition on hover. |
 | `variables` | `{ "version": "2.4.1" }`: each `{{name}}` in a page becomes its value, code blocks included. See [AUTHORING.md](AUTHORING.md#includes-and-variables). |
 
 A site ships its own favicon by putting `favicon.svg`/`.ico`/`.png` in

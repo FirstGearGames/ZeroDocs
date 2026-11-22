@@ -174,6 +174,108 @@ The rule nests as deep as you need: three backticks for code, `~~~` to show
 that code's source, four backticks to show the `~~~`, five to show the four, 
 each example on this page uses exactly that ladder.
 
+## Highlighted lines
+
+Put line numbers in braces after the language: single lines, ranges, or both.
+
+You write:
+
+~~~markdown
+```js {2,4-5}
+function connect(server) {
+  const socket = open(server);
+  socket.on('message', onMessage);
+  socket.on('close', retry);
+  return socket;
+}
+```
+~~~
+
+Preview:
+
+```js {2,4-5}
+function connect(server) {
+  const socket = open(server);
+  socket.on('message', onMessage);
+  socket.on('close', retry);
+  return socket;
+}
+```
+
+## Added and removed lines
+
+End a line with a `[!code ++]` or `[!code --]` comment to mark it added or
+removed, in any language; `[!code highlight]` highlights it. The comment
+itself never shows, not even in a copy.
+
+You write:
+
+~~~markdown
+```cs
+void Start() {
+    Connect(); // [!code --]
+    ConnectAsync(); // [!code ++]
+}
+```
+~~~
+
+Preview:
+
+```cs
+void Start() {
+    Connect(); // [!code --]
+    ConnectAsync(); // [!code ++]
+}
+```
+
+## Long blocks fold
+
+A block over 30 lines shows its first 25, with a **Show all** button for the
+rest.
+
+```js
+const step1 = 1 * TICK_MS;
+const step2 = 2 * TICK_MS;
+const step3 = 3 * TICK_MS;
+const step4 = 4 * TICK_MS;
+const step5 = 5 * TICK_MS;
+const step6 = 6 * TICK_MS;
+const step7 = 7 * TICK_MS;
+const step8 = 8 * TICK_MS;
+const step9 = 9 * TICK_MS;
+const step10 = 10 * TICK_MS;
+const step11 = 11 * TICK_MS;
+const step12 = 12 * TICK_MS;
+const step13 = 13 * TICK_MS;
+const step14 = 14 * TICK_MS;
+const step15 = 15 * TICK_MS;
+const step16 = 16 * TICK_MS;
+const step17 = 17 * TICK_MS;
+const step18 = 18 * TICK_MS;
+const step19 = 19 * TICK_MS;
+const step20 = 20 * TICK_MS;
+const step21 = 21 * TICK_MS;
+const step22 = 22 * TICK_MS;
+const step23 = 23 * TICK_MS;
+const step24 = 24 * TICK_MS;
+const step25 = 25 * TICK_MS;
+const step26 = 26 * TICK_MS;
+const step27 = 27 * TICK_MS;
+const step28 = 28 * TICK_MS;
+const step29 = 29 * TICK_MS;
+const step30 = 30 * TICK_MS;
+const step31 = 31 * TICK_MS;
+const step32 = 32 * TICK_MS;
+const step33 = 33 * TICK_MS;
+const step34 = 34 * TICK_MS;
+const step35 = 35 * TICK_MS;
+const step36 = 36 * TICK_MS;
+const step37 = 37 * TICK_MS;
+const step38 = 38 * TICK_MS;
+const step39 = 39 * TICK_MS;
+const step40 = 40 * TICK_MS;
+```
+
 ## Raw / plain text
 
 Use the `text` or `raw` tag for content that should not be highlighted or

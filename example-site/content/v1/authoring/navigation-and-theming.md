@@ -37,6 +37,11 @@ order, and files it omits are hidden.
 | `href` | Override the computed link. |
 | `external` | Open in a new tab with an `↗` marker. |
 
+The filter box at the top of the sidebar narrows it to pages whose title
+matches, keeping their folders; Enter opens the first match. On wide screens
+the menu button in the header collapses the sidebar, and the choice is
+remembered.
+
 **Preview:** the sidebar on the left of this page, including the **Authoring
 Guide** section, its ordering, and the tags elsewhere in the tree, is rendered
 from `_meta.json` files exactly like the one above.
@@ -68,6 +73,38 @@ title: "Upcoming feature"
 draft: true
 ---
 ```
+
+## Page layouts
+
+`layout` in a page's frontmatter changes its shape:
+
+| Layout | Effect |
+|--------|--------|
+| `wide` | No "On this page" list; the content takes the full width. For pages that are mostly wide tables. |
+| `landing` | A home page: no sidebar on wide screens, no contents list or breadcrumb, and a large centred title. |
+
+```markdown
+---
+title: "Welcome"
+layout: landing
+---
+```
+
+**Preview:** this demo's [home page](/docs/v1) uses `landing`.
+
+## Glossary
+
+Define terms once in `docs.config.json`, and the first use of each on a page
+gets a dotted underline that shows the definition on hover or focus. Matching
+is whole-word and ignores case; headings, links and code are left alone.
+
+```json
+"glossary": {
+  "frontmatter": "The --- block of settings at the top of a page."
+}
+```
+
+**Preview:** hover "frontmatter" on the [home page](/docs/v1).
 
 ## Link previews and search engines
 
@@ -176,6 +213,16 @@ Set your repository and every page gains an "Edit this page on GitHub" link:
 {
   "github": { "repo": "https://github.com/you/repo", "branch": "main", "contentDir": "content" }
 }
+```
+
+With a `repo` set, every page's toolbar also gets a **Report an issue** button
+that opens a new issue on that repository, filled in with the page's title and
+address. Issues that live elsewhere take a `github.issues` address instead,
+and it alone is enough for the button, with no edit links. This demo sets only
+`issues`, pointing at ZeroDocs itself:
+
+```json
+"github": { "issues": "https://github.com/FirstGearGames/ZeroDocs/issues/new" }
 ```
 
 That's the whole feature set. Back to the [Overview](/docs/v1/authoring).

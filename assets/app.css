@@ -124,7 +124,9 @@ mark.hit { background: color-mix(in srgb, #facc15 45%, transparent); color: inhe
   background: var(--bg2); color: var(--text); font-size: .8rem; cursor: pointer;
 }
 .ver-sel:hover { border-color: var(--link); }
-#hbg { display: none; }
+/* The menu button opens the drawer on narrow screens and collapses the sidebar on wide ones. */
+#hbg { display: flex; }
+@media (min-width: 901px) { html.nav-collapsed #sidebar { display: none; } }
 
 .body { display: flex; flex: 1; min-height: 0; max-width: 1515px; width: 100%; margin: 0 auto; }
 
@@ -673,7 +675,6 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 #sovl { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, .5); z-index: 90; }
 @media (max-width: 900px) {
-  #hbg { display: flex; }
   .top-nav { display: none; }
   #sidebar .side-links:not(:empty) { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
   .side-links a { font-size: .9rem; color: var(--muted); }
@@ -723,8 +724,67 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 }
 
 /* ── Print ───────────────────────────────────────────────────────────────── */
+/* ── Sidebar filter ──────────────────────────────────────────────────────── */
+.nav-filter { position: sticky; top: 0; z-index: 2; padding: 12px 12px 0; background: var(--sidebar); }
+#navfilter {
+  width: 100%; padding: 6px 10px; font: inherit; font-size: .82rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+}
+#navfilter:focus-visible { outline: none; border-color: var(--link); }
+
+/* ── Phone header: the page toolbar drops under the breadcrumb ─────────────── */
+@media (max-width: 640px) {
+  .bc-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .edit-top { margin-left: 0; }
+}
+
+/* ── Page layouts (frontmatter layout:) ────────────────────────────────────── */
+body[data-layout="wide"] #toc, body[data-layout="wide"] .toc-inline,
+body[data-layout="landing"] #toc, body[data-layout="landing"] .toc-inline { display: none !important; }
+body[data-layout="wide"] #cinner { max-width: none; }
+@media (min-width: 901px) { body[data-layout="landing"] #sidebar { display: none; } }
+body[data-layout="landing"] #cinner { max-width: 1100px; }
+body[data-layout="landing"] .bc-row, body[data-layout="landing"] #pn, body[data-layout="landing"] h1.ptitle .read-time { display: none; }
+body[data-layout="landing"] h1.ptitle { font-size: 2.6rem; text-align: center; margin-top: 28px; }
+body[data-layout="landing"] p.psubtitle { text-align: center; font-size: 1.2rem; max-width: 720px; margin: 0 auto 40px; }
+
+/* ── Member tables: sticky header, a link per row ────────────────────────── */
+.table-wrap.fits { overflow: visible; }
+.table-wrap.fits th { position: sticky; top: 56px; z-index: 1; }
+.prose tr[id] { scroll-margin-top: 72px; }
+.prose tr:hover .hanchor, .prose td .hanchor:focus-visible { opacity: 1; }
+.prose tr:target td { background: color-mix(in srgb, var(--link) 10%, transparent); }
+
+/* ── Code line marks and long-block folds ────────────────────────────────── */
+.prose pre .ln { display: inline-block; min-width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px; }
+.prose pre .ln-hl { background: color-mix(in srgb, var(--link) 12%, transparent); }
+.prose pre .ln-ins { background: var(--tk-ins-bg); box-shadow: inset 3px 0 var(--tk-ins); }
+.prose pre .ln-del { background: var(--tk-del-bg); box-shadow: inset 3px 0 var(--tk-del); opacity: .75; }
+.prose pre.fold code { max-height: calc(25 * 1.6em + 58px); overflow-y: hidden; }
+.prose pre.fold::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 72px; pointer-events: none;
+  background: linear-gradient(transparent, var(--code-bg));
+}
+.fold-btn {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2;
+  padding: 4px 14px; font-size: .75rem; cursor: pointer; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 999px;
+}
+.fold-btn:hover { border-color: var(--link); }
+
+/* ── Glossary terms ──────────────────────────────────────────────────────── */
+.gloss { border-bottom: 1px dotted currentColor; cursor: help; position: relative; }
+.gloss:hover::after, .gloss:focus::after {
+  content: attr(data-def); position: absolute; left: 0; top: calc(100% + 6px); z-index: 30;
+  width: max-content; max-width: min(320px, 80vw); padding: 8px 10px; border-radius: 6px;
+  background: var(--text); color: var(--bg); font-size: .8rem; line-height: 1.45; font-weight: 400;
+  white-space: normal; box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+}
+
 @media print {
-  header, #sidebar, #sovl, #toc, .toc-inline, #pn, #editwrap, #edittop, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor { display: none !important; }
+  header, #sidebar, #sovl, #toc, .toc-inline, #pn, #editwrap, #edittop, .btt, #smodal, #lightbox, .bc, .copy-btn, .hanchor, .fold-btn { display: none !important; }
+  .prose pre.fold code { max-height: none; }
+  .prose pre.fold::after { display: none; }
   #cwrap { padding: 0; }
   #cinner { max-width: 100%; }
   body { background: #fff; color: #000; }

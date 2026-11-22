@@ -102,6 +102,24 @@ Use `:` in the separator row to set column alignment (left / center / right).
 | Search    |  Ready  |      v1 |
 | Live reload | Ready |      v2 |
 
+**Rows you can link to.** When a row's first cell starts with code, as in an
+API member table, the row gets its own link: hover it for the `#`, or link to
+`#isserver` directly. A long table keeps its header in view as it scrolls.
+
+```markdown
+| Member | Meaning |
+|--------|---------|
+| `IsServer` | True on the server's side of a connection. |
+| `IsClient` | True on a client's side. |
+```
+
+**Preview:**
+
+| Member | Meaning |
+|--------|---------|
+| `IsServer` | True on the server's side of a connection. |
+| `IsClient` | True on a client's side. |
+
 ## Blockquotes
 
 ```markdown

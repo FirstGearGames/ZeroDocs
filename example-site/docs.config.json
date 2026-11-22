@@ -27,6 +27,14 @@
     ]
   },
 
+  "_comment_github": "No repo, so no edit links (see above); issues alone adds the Report an issue button, here for ZeroDocs itself.",
+  "github": { "issues": "https://github.com/FirstGearGames/ZeroDocs/issues/new" },
+
+  "glossary": {
+    "frontmatter": "The --- block of settings at the top of a page: title, description, tag, layout and more.",
+    "directive": "A ::: block such as :::hint or :::tabs that renders a component from plain Markdown."
+  },
+
   "variables": { "version": "2.0.0" },
 
   "theme": {
