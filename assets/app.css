@@ -738,7 +738,7 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
   .edit-top { margin-left: 0; }
 }
 
-/* ── Page layout wide (frontmatter layout: wide)────────────────────────────────────── */
+/* ── Wide pages (frontmatter layout: wide) ───────────────────────────────── */
 body[data-layout="wide"] #toc, body[data-layout="wide"] .toc-inline { display: none !important; }
 body[data-layout="wide"] #cinner { max-width: none; }
 
