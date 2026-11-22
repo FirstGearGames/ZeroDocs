@@ -198,6 +198,18 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
     && h.includes('href="//cdn.example/z"') && h.includes('href="https://e.example/"'));
 })();
 
+// ── Link previews: canonical and image URLs made absolute by config.url ─────
+(() => {
+  const page = { title: 'T', version: 'v1', slug: 'a/b', html: '' };
+  const shell = (config, p = page) => renderShell({ config, versions: ['v1'], page: p, assetsVer: '1' });
+  const h = shell({ url: 'https://docs.example.com/sub/', image: '/static/og.png' });
+  ok('canonical and og:url from config.url', h.includes('<link rel="canonical" href="https://docs.example.com/sub/docs/v1/a/b"/>') && h.includes('<meta property="og:url" content="https://docs.example.com/sub/docs/v1/a/b"/>'));
+  ok('site share image made absolute', h.includes('<meta property="og:image" content="https://docs.example.com/sub/static/og.png"/>') && h.includes('content="summary_large_image"'));
+  ok('page image overrides the site image', shell({ url: 'https://d.example', image: '/static/og.png' }, { ...page, image: '/static/page.png' }).includes('content="https://d.example/static/page.png"'));
+  ok('no url, no canonical; no image, summary card', (s => !s.includes('rel="canonical"') && !s.includes('og:image') && s.includes('content="summary"'))(shell({})));
+  ok('a url that is not plain http(s) is ignored', !shell({ url: 'javascript:alert(1)' }).includes('rel="canonical"') && !shell({ url: 'https://e.example/"><b>x' }).includes('rel="canonical"'));
+})();
+
 // ── Includes, variables and drafts (a temp site, read through the engine) ───
 (() => {
   const fs = require('fs'), os = require('os');

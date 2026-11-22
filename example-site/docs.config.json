@@ -1,6 +1,7 @@
 {
   "title": "ZeroDocs Demo",
   "description": "A live example site showing what ZeroDocs renders from plain Markdown.",
+  "url": "https://firstgeargames.github.io/ZeroDocs",
   "logo": "",
 
   "versions": ["v1"],

@@ -218,6 +218,8 @@ documented in [SECURITY.md](SECURITY.md).
 |-----|---------|
 | `title` | Site name, header, tab titles, generated favicon letter. |
 | `description` | Meta description + OpenGraph fallback. |
+| `url` | The site's public address, any sub-path included: `https://docs.example.com` or `https://user.github.io/repo`. Makes canonical links, link-preview URLs and the sitemap absolute. |
+| `image` | Default link-preview image (`og:image`), e.g. `/static/share.png`; a page's `image` frontmatter overrides it. Use PNG or JPEG, which every previewer reads. |
 | `logo` | Header logo image URL. Falls back to a letter tile. |
 | `logoStyle` | Logo look: `{ "radius", "border", "borderDark", "borderWidth" }`. `radius` rounds and clips the image; `border` draws a border outside it (`borderDark` is its dark-mode color, `borderWidth` defaults to 1px). |
 | `logoDark` | Optional logo shown in the dark theme; `logo` is then shown only in the light theme. Follows the OS preference and the theme toggle. |

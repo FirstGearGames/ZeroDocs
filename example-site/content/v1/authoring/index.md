@@ -62,6 +62,7 @@ tag: Live
 | `cover` | Edge-to-edge cover image with a fixed aspect ratio. |
 | `cover-position` | Focal point for the cover, e.g. `center top`. |
 | `tag` | Small pill next to the title (the **Live** pill above). |
+| `image` | Link-preview image when the page is shared, in place of the site's `image`. |
 | `draft` | `true` keeps the page out of the static build; the preview server shows it tagged **Draft**. |
 
 **Preview:** the banner, sub-title, and tag at the top of this page are all

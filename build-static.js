@@ -25,6 +25,7 @@ const { buildNav } = require('./lib/navigation');
 const { buildSearchIndex } = require('./lib/search');
 const contentLib = require('./lib/content');
 const { renderShell, renderFavicon } = require('./lib/shell');
+const { publicUrl } = require('./lib/util');
 
 const ENGINE_DIR = __dirname;
 const pkg = (() => { try { return JSON.parse(fs.readFileSync(path.join(ENGINE_DIR, 'package.json'), 'utf8')); } catch { return {}; } })();
@@ -160,9 +161,13 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/** sitemap.xml, robots.txt, llms.txt, llms-full.txt (relative URLs, base-prefixed). */
+/**
+ * sitemap.xml, robots.txt, llms.txt, llms-full.txt. URLs are absolute when the
+ * config names the site's public `url`, as the sitemap protocol asks;
+ * otherwise relative and base-prefixed.
+ */
 function writeCrawlerFiles(site, config, versions, outDir, basePath) {
-  const b = basePath || '';
+  const b = publicUrl(config) || basePath || '';
   const urls = [];
   for (const v of versions) {
     urls.push(`  <url><loc>${b}/docs/${v}</loc></url>`);

@@ -64,6 +64,7 @@ tag: New
 | `banner` | Full-width image rendered above the title. Use a `/static/…` path or any URL. |
 | `cover` / `cover-position` | Cover image and its focal position. |
 | `tag` | Small pill next to the title (e.g. `New`, `Beta`). |
+| `image` | Link-preview image for this page, in place of the site's `image`. |
 | `draft` | `true` keeps the page out of the static build, sidebar, search and sitemap. The preview server still shows it, tagged **Draft**. |
 
 ## Sidebar control, `_meta.json`

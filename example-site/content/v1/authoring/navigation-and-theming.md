@@ -69,6 +69,23 @@ draft: true
 ---
 ```
 
+## Link previews and search engines
+
+Set `url` in `docs.config.json` to the site's public address, including any
+sub-path, and every page names its canonical address. Link previews in chat
+apps and social sites get absolute URLs, and `sitemap.xml` lists absolute ones
+too. An `image` gives shared links a picture; a page's `image` frontmatter
+overrides it.
+
+```json
+"url": "https://docs.example.com",
+"image": "/static/share.png"
+```
+
+Use a PNG or JPEG for the image, since some previewers skip SVG. Every page
+also arrives with its content already in the HTML, so search engines and
+previews read it without running any script.
+
 ## Versions
 
 Each sub-folder of `content/` is a version. List them in `docs.config.json`;
