@@ -87,6 +87,8 @@ header {
 html.dark .logo-img { --logo-border: var(--logo-border-dark); }
 html:not(.dark) .logo-img-dark, html.dark .logo-img-light { display: none; }
 .top-nav { display: flex; gap: 18px; margin-left: 4px; }
+/* The header links' drawer copy: shown only where the header hides them (≤900px). */
+.side-links { display: none; }
 .top-nav a { font-size: .875rem; color: var(--muted); white-space: nowrap; }
 .top-nav a:hover { color: var(--link); text-decoration: none; }
 /* A nav link marked "button": the announcement bar's muted accent tint. */
@@ -650,6 +652,8 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
 @media (max-width: 900px) {
   #hbg { display: flex; }
   .top-nav { display: none; }
+  #sidebar .side-links:not(:empty) { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .side-links a { font-size: .9rem; color: var(--muted); }
   #sidebar {
     position: fixed; top: 56px; left: 0; height: calc(100vh - 56px); z-index: 95;
     transform: translateX(-100%); transition: transform .22s ease;

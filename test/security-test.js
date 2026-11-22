@@ -184,6 +184,10 @@ ok('bare embed does not swallow up to a later endembed', (h => h.includes('text 
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 })();
 
+// ── Header links have a drawer copy for widths that hide the header's ───────
+ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class="side-links" aria-label="Site links"><a href="\/static\/downloads\/latest\.pdf" target="_blank" rel="noopener">PDF<\/a><\/nav>/.test(
+  renderShell({ config: { nav: [{ label: 'PDF', href: '/static/downloads/latest.pdf' }] }, versions: ['v1'], page: null, assetsVer: '1' })));
+
 const total = pass + failures.length;
 console.log(`\n  Security suite: ${pass}/${total} passed`);
 if (failures.length) {
