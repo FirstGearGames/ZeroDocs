@@ -5,7 +5,7 @@ description: "A live example of everything the engine renders from plain Markdow
 
 # ZeroDocs Demo
 
-This is a live example site served by **ZeroDocs**. It reads Markdown files from a `content/` folder and generates a fully-featured documentation portal, similar to Docker Docs and GitBook. Every feature below is rendered by the engine from the Markdown in this folder.
+This is a live example site served by **ZeroDocs**. It reads Markdown files from a `content/` folder and generates a fully-featured documentation portal. Every feature below is rendered by the engine from the Markdown in this folder.
 
 :::card bg="#f0f7ff" border="#93c5fd" href="/docs/v1/authoring"
 ### 📖 Start with the Component Showcase

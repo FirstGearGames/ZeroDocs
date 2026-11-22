@@ -84,20 +84,20 @@ If you prefer GitHub's alert style, it converts to the same callout. Aliases:
 > [!TIP]
 > This renders as a green success callout.
 
-## GitBook syntax
+## `{% hint %}` syntax
 
-Imported GitBook content works unchanged:
+Imported content written with `{% hint %}` tags works unchanged:
 
 ```markdown
 {% hint style="danger" %}
-GitBook's `{% hint %}` blocks are accepted as-is.
+`{% hint %}` blocks are accepted as-is.
 {% endhint %}
 ```
 
 **Preview:**
 
 {% hint style="danger" %}
-GitBook's `{% hint %}` blocks are accepted as-is.
+`{% hint %}` blocks are accepted as-is.
 {% endhint %}
 
 ## Rich content

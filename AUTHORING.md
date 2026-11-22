@@ -107,7 +107,7 @@ Two conveniences worth knowing:
 - **Relative `.md` links become routes.** `[Setup](./setup.md)` on
   `/docs/v1/guides` links to `/docs/v1/guides/setup`, so links that work on
   GitHub work on the site.
-- **Code fences protect everything.** Directive syntax, GitBook tags, and
+- **Code fences protect everything.** Directive syntax, `{% %}` tags, and
   emoji shortcodes inside a fence render as written, you can document the
   engine's own syntax.
 
@@ -162,7 +162,7 @@ Back up your project before running the migration.
 > This is an informational callout.
 ```
 
-**GitBook form** (understood on import):
+**`{% hint %}` form** (understood on import):
 ```markdown
 {% hint style="success" %}
 It worked.
@@ -257,7 +257,7 @@ Instructions for macOS.
 :::endtabs
 ```
 
-The `=== Tab Name` shorthand and GitBook `{% tabs %}` blocks convert to the same
+The `=== Tab Name` shorthand and `{% tabs %}` blocks convert to the same
 output. Tabs with the same label are **synced**: picking "Windows" in one block
 switches every other block with a "Windows" tab, and the choice is remembered
 across pages.

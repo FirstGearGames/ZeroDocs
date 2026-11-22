@@ -129,7 +129,7 @@ This paragraph is centered.
 
 ## Emoji shortcodes
 
-`:name:` shortcodes expand to emoji, handy when imported from GitBook.
+`:name:` shortcodes expand to emoji, handy for imported content.
 
 ```markdown
 Status: :check-circle: shipped, :rocket-launch: fast, :lock: secure.
