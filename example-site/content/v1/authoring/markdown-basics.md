@@ -27,6 +27,11 @@ Relative `.md` links are rewritten to routes automatically, so links that work
 in your editor work on the site. External links open in a new tab with an `↗`
 marker, and bare URLs in angle brackets autolink.
 
+A broken link never ships. The static build checks every page: links to pages,
+`#anchors` against the headings and table rows they name, and `/static/` images
+and files. It stops on any that are broken, listing each one, and the preview
+server lists them when it starts.
+
 ```markdown
 - Relative page: [Callouts](./callouts.md)
 - Absolute route: [Code Blocks](/docs/v1/authoring/code)

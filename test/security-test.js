@@ -283,6 +283,24 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
     ok('frontmatter layout reaches the payload, only the known ones', contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'wide').layout === 'wide'
       && contentLib.buildDocPayload(site, site.loadConfig(), 'v1', 'odd').layout === '');
 
+    // Broken links, read from every page's rendered HTML. The pages above are
+    // all sound (include failures render as callouts, not links), so only
+    // links.md's broken ones may be reported.
+    put('docs.config.json', JSON.stringify({ variables: { version: '1.2.3' }, redirects: { '/docs/v1/old': '/docs/v1/images' } }));
+    put('content/v1/links.md', [
+      '# Links', '| Member | Meaning |', '|---|---|', '| `IsServer` | x |', '',
+      '[ok](./images.md) [ok row](./links.md#isserver) [ok here](#links) [ok redirect](/docs/v1/old) ![ok](/static/plain.png)',
+      '[gone](./nope.md) [bad anchor](./images.md#nope) [bad here](#nowhere) ![missing](/static/missing.png)',
+      '```md', '[not a link](./in-code.md)', '```', '',
+    ].join('\n'));
+    const problems = contentLib.checkLinks(site, site.loadConfig()).filter(p => p.startsWith('/docs/v1/links:'));
+    ok('every broken link is reported, and nothing else', JSON.stringify(problems.sort()) === JSON.stringify([
+      '/docs/v1/links: image /static/missing.png is missing from static/',
+      '/docs/v1/links: links to /docs/v1/images#nope, which has no such heading or row',
+      '/docs/v1/links: links to /docs/v1/nope, which is not a page',
+      '/docs/v1/links: no #nowhere on this page',
+    ]));
+
     const preview = createSite(root, { drafts: true });
     ok('draft shown, tagged, on the preview server', (contentLib.buildDocPayload(preview, preview.loadConfig(), 'v1', 'draft') || {}).tag === 'Draft'
       && buildNav(preview, 'v1').some(n => n.title === 'Secret draft'));

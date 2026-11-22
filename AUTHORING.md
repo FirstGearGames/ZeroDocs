@@ -107,11 +107,15 @@ table of contents, which folds under the page title on narrow screens. A
 table row whose first cell starts with `code` gets its own link
 (`#isserver` for `` `IsServer` ``), and a long table keeps its header in view. External links open in a new tab with an `↗` marker.
 
-Two conveniences worth knowing:
+Three things worth knowing:
 
 - **Relative `.md` links become routes.** `[Setup](./setup.md)` on
   `/docs/v1/guides` links to `/docs/v1/guides/setup`, so links that work on
   GitHub work on the site.
+- **Broken links stop the build.** Every link to a page, every `#anchor`
+  (checked against the target's headings and table rows) and every `/static/`
+  image or file is checked on every page; the static build lists the broken
+  ones and stops, and the preview server lists them at startup.
 - **Code fences protect everything.** Directive syntax, `{% %}` tags, and
   emoji shortcodes inside a fence render as written, you can document the
   engine's own syntax. Variables are the one exception: `{{name}}` fills in

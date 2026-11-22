@@ -99,6 +99,18 @@ const prose = html => (html.match(/<div id="prose" class="prose">([\s\S]*?)<\/di
     servers.push(live);
     const liveReuse = await get(live, '/docs/v1/authoring/reuse');
     ok('preview server page carries its content', liveReuse.status === 200 && prose(liveReuse.text).includes('Install version 2.0.0') && pageData(liveReuse.text).title === 'Includes & Variables');
+
+    // ── A broken link stops the build before it writes anything ─────────────
+    const bad = fs.mkdtempSync(path.join(os.tmpdir(), 'zbad-'));
+    try {
+      fs.mkdirSync(path.join(bad, 'content', 'v1'), { recursive: true });
+      fs.writeFileSync(path.join(bad, 'content', 'v1', 'index.md'), '# Home\n\n[gone](./nope.md)\n');
+      const badOut = path.join(bad, 'out');
+      let code = 0, stderr = '';
+      try { execFileSync(process.execPath, [path.join(ENGINE, 'build-static.js'), bad], { env: { ...process.env, DOCS_OUT: badOut }, stdio: 'pipe' }); }
+      catch (e) { code = e.status; stderr = String(e.stderr); }
+      ok('a broken link fails the build, names the link, and writes nothing', code === 1 && stderr.includes('/docs/v1: links to /docs/v1/nope, which is not a page') && !fs.existsSync(badOut));
+    } finally { fs.rmSync(bad, { recursive: true, force: true }); }
   } catch (e) {
     failures.push(`suite crashed: ${e && e.stack || e}`);
   } finally {

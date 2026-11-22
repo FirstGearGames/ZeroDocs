@@ -70,6 +70,15 @@ function build() {
     process.exit(1);
   }
 
+  // A broken link fails the build before anything is written, listing every one.
+  const broken = contentLib.checkLinks(site, config);
+  if (broken.length) {
+    console.error(`\n  ✖ ${broken.length} broken link${broken.length === 1 ? '' : 's'}, build stopped:`);
+    broken.forEach(b => console.error(`     ${b}`));
+    console.error('');
+    process.exit(1);
+  }
+
   // Clean the output dir so removed pages don't linger.
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });

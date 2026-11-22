@@ -82,6 +82,9 @@ DOCS_ROOT=/path/to/my-site node /path/to/zerodocs/build-static.js
 node build-static.js ./example-site      # or: npm run build:example
 ```
 
+Before writing anything, the build checks every link on every page (pages,
+`#anchors`, `/static/` files) and stops with a list if any are broken.
+
 The output (default `<site>/out`, override with `DOCS_OUT`) is a complete
 static site. Each page carries its content in the HTML, and `sw.js` keeps what a
 reader has opened for offline reading. It includes Cloudflare `_headers` (a strict Content-Security-Policy

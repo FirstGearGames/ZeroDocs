@@ -73,7 +73,7 @@ server.listen(PORT, HOST, () => {
   } else {
     const warnings = checkLinks(site, config);
     if (warnings.length) {
-      console.log(`  ⚠  ${warnings.length} broken internal link${warnings.length === 1 ? '' : 's'}:`);
+      console.log(`  ⚠  ${warnings.length} broken link${warnings.length === 1 ? '' : 's'} (a static build stops on these):`);
       warnings.slice(0, 10).forEach(w => console.log(`     ${w}`));
       if (warnings.length > 10) console.log(`     … and ${warnings.length - 10} more`);
       console.log('');
