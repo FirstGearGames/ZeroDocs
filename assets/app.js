@@ -779,6 +779,13 @@ if (!STATIC) try {
   };
 } catch { /* SSE unavailable, refresh manually */ }
 
+/* ── Offline reading (static builds): the service worker keeps what's read ─── */
+if (STATIC && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(withBase('/sw.js'), { scope: `${BASE}/` }).catch(() => { /* no offline reading here */ });
+  });
+}
+
 /* ── Init ────────────────────────────────────────────────────────────────── */
 (async () => {
   const target = parseDocsPath(location.pathname + location.hash) || { version: ver, slug: '', hash: '' };

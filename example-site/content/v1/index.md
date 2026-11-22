@@ -20,6 +20,7 @@ Every feature the engine supports, callouts, cards, tabs, code, and more, each s
 - **Full-text search**, Press `Cmd+K` (or `Ctrl+K`) to open the search modal. Results group by page, a section filter narrows them, and the page you open highlights your query until you clear the search box
 - **Versioning**, Publish multiple doc versions side by side when you need them (this demo ships one)
 - **Dark/Light mode**, Toggle theme with persistent preferences
+- **Offline reading**, A built site keeps the pages you open, so they open again without a connection
 - **Mobile-friendly**, Hamburger sidebar on small screens
 - **Table of contents**, Auto-generated right sidebar with heading navigation, folded under the title on narrow screens
 - **Material Cards & Buttons**, Rich UI components with full customization

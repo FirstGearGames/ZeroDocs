@@ -142,6 +142,9 @@ function build() {
   // ── Crawler files ─────────────────────────────────────────────────────────
   writeCrawlerFiles(site, config, versions, outDir, basePath);
 
+  // ── Offline reading ───────────────────────────────────────────────────────
+  writeServiceWorker(outDir, basePath, versions);
+
   // ── Cloudflare _headers / _redirects ──────────────────────────────────────
   writeHeaders(outDir);
   writeRedirects(config, rootRedirect, outDir, basePath);
@@ -194,6 +197,53 @@ function writeCrawlerFiles(site, config, versions, outDir, basePath) {
     }
     write(path.join(outDir, kind), lines.join('\n'));
   }
+}
+
+/**
+ * sw.js, for offline reading. Network first, so an online reader always gets
+ * the latest page; whatever a reader fetches is kept and served from the cache
+ * once the network is gone. The engine assets, every version's sidebar and the
+ * page that installed the worker are cached up front, so a page read once
+ * reads again offline. A new build changes the cache name, and the old cache
+ * is dropped when the new worker takes over.
+ */
+function writeServiceWorker(outDir, basePath, versions) {
+  const b = basePath || '';
+  const v = encodeURIComponent(ASSETS_VER);
+  const precache = [`${b}/assets/app.css?v=${v}`, `${b}/assets/app.js?v=${v}`, ...versions.map(ver => `${b}/data/${ver}/nav.json`)];
+  write(path.join(outDir, 'sw.js'), `'use strict';
+const CACHE = ${JSON.stringify(`zerodocs-${ASSETS_VER}`)};
+const PRECACHE = ${JSON.stringify(precache)};
+const OFFLINE = '<!doctype html><meta charset="utf-8"><title>Offline</title><p style="font-family:sans-serif;padding:2rem">You are offline, and this page has not been read on this device yet.</p>';
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil((async () => {
+    for (const k of await caches.keys()) if (k.startsWith('zerodocs-') && k !== CACHE) await caches.delete(k);
+    await self.clients.claim();
+    // The page that installed this worker loaded before it existed; keep it too.
+    const cache = await caches.open(CACHE);
+    for (const c of await self.clients.matchAll({ type: 'window', includeUncontrolled: true })) await cache.add(c.url).catch(() => {});
+  })());
+});
+
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin || req.headers.get('Accept') === 'text/event-stream') return;
+  e.respondWith(fetch(req).then(res => {
+    if (res.status === 200 && res.type === 'basic') {
+      const copy = res.clone();
+      e.waitUntil(caches.open(CACHE).then(c => c.put(req, copy)));
+    }
+    return res;
+  }).catch(async () => (await caches.match(req)) || (req.mode === 'navigate'
+    ? new Response(OFFLINE, { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } })
+    : Response.error())));
+});
+`);
 }
 
 /** Cloudflare _headers: the same security posture the live server sends. */

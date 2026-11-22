@@ -15,7 +15,9 @@ link, so anyone can propose a change without cloning anything. See
 **Or run it entirely offline.** Because it has **zero dependencies** (Node.js
 built-ins only, no `npm install`) and the pages make **zero external requests**
 (no CDN scripts, no web fonts), the same software also runs as a local preview
-server or builds a fully self-contained static site. It works on a plane.
+server or builds a fully self-contained static site. It works on a plane, and
+a static build keeps every page a reader opens, so it opens again with no
+connection at all.
 
 **See it live: https://firstgeargames.github.io/ZeroDocs/** is the **Authoring
 Guide**, a page-by-page tour of every feature with source and rendered output
@@ -81,7 +83,8 @@ node build-static.js ./example-site      # or: npm run build:example
 ```
 
 The output (default `<site>/out`, override with `DOCS_OUT`) is a complete
-static site. It includes Cloudflare `_headers` (a strict Content-Security-Policy
+static site. Each page carries its content in the HTML, and `sw.js` keeps what a
+reader has opened for offline reading. It includes Cloudflare `_headers` (a strict Content-Security-Policy
 and security headers) and `_redirects` out of the box.
 
 ## Hosting on Cloudflare Pages (with GitHub editing)
