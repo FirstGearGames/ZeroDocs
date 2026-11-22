@@ -74,19 +74,15 @@ draft: true
 ---
 ```
 
-## Page layouts
+## Wide pages
 
-`layout` in a page's frontmatter changes its shape:
-
-| Layout | Effect |
-|--------|--------|
-| `wide` | No "On this page" list; the content takes the full width. For pages that are mostly wide tables. |
-| `landing` | A home page: no sidebar on wide screens, no contents list or breadcrumb, and a large centred title. |
+Set `layout: wide` in a page's frontmatter to drop the "On this page" list and
+give the content the full width, for pages that are mostly wide tables.
 
 ```markdown
 ---
-title: "Welcome"
-layout: landing
+title: "Error codes"
+layout: wide
 ---
 ```
 

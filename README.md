@@ -179,7 +179,7 @@ titles; callouts (three syntaxes); tabs (synced and remembered); cards,
 nav/ref/file cards, buttons, badges, steps, grids, keyboard keys, field tables;
 video embeds (YouTube/Vimeo); page references; collapsible sections;
 highlighted and added/removed code lines; long code blocks folded; linkable
-table rows; page layouts (`wide`, `landing`); a glossary; includes of shared
+table rows; a `wide` page layout; a glossary; includes of shared
 Markdown and of code regions from source files; config
 variables; draft pages; dark-mode image twins; `{% hint %}`-style tags
 accepted on import; relative `*.md` links rewritten to routes.

@@ -65,7 +65,7 @@ tag: New
 | `cover` / `cover-position` | Cover image and its focal position. |
 | `tag` | Small pill next to the title (e.g. `New`, `Beta`). |
 | `image` | Link-preview image for this page, in place of the site's `image`. |
-| `layout` | `wide` drops the "On this page" list for the full width; `landing` is a home page: no sidebar on wide screens, no contents list or breadcrumb, a large centred title. |
+| `layout` | `wide` drops the "On this page" list so the content takes the full width. |
 | `draft` | `true` keeps the page out of the static build, sidebar, search and sitemap. The preview server still shows it, tagged **Draft**. |
 
 ## Sidebar control, `_meta.json`

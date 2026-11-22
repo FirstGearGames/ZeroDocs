@@ -215,7 +215,7 @@ ok('header links copied into the mobile drawer', /<aside id="sidebar"><nav class
 // ── Page layouts ────────────────────────────────────────────────────────────
 (() => {
   const page = layout => renderShell({ config: {}, versions: ['v1'], page: { title: 'T', version: 'v1', slug: '', html: '', layout }, assetsVer: '1' });
-  ok('a page layout reaches the body', page('landing').includes('<body data-layout="landing">') && page('').includes('<body>'));
+  ok('a page layout reaches the body', page('wide').includes('<body data-layout="wide">') && page('').includes('<body>'));
 })();
 
 // ── Link previews: canonical and image URLs made absolute by config.url ─────

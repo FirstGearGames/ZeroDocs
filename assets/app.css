@@ -738,15 +738,9 @@ a.md-card-link:focus-visible { outline: 2px solid var(--link); outline-offset: 3
   .edit-top { margin-left: 0; }
 }
 
-/* ── Page layouts (frontmatter layout:) ────────────────────────────────────── */
-body[data-layout="wide"] #toc, body[data-layout="wide"] .toc-inline,
-body[data-layout="landing"] #toc, body[data-layout="landing"] .toc-inline { display: none !important; }
+/* ── Page layout wide (frontmatter layout: wide)────────────────────────────────────── */
+body[data-layout="wide"] #toc, body[data-layout="wide"] .toc-inline { display: none !important; }
 body[data-layout="wide"] #cinner { max-width: none; }
-@media (min-width: 901px) { body[data-layout="landing"] #sidebar { display: none; } }
-body[data-layout="landing"] #cinner { max-width: 1100px; }
-body[data-layout="landing"] .bc-row, body[data-layout="landing"] #pn, body[data-layout="landing"] h1.ptitle .read-time { display: none; }
-body[data-layout="landing"] h1.ptitle { font-size: 2.6rem; text-align: center; margin-top: 28px; }
-body[data-layout="landing"] p.psubtitle { text-align: center; font-size: 1.2rem; max-width: 720px; margin: 0 auto 40px; }
 
 /* ── Member tables: sticky header, a link per row ────────────────────────── */
 .table-wrap.fits { overflow: visible; }
