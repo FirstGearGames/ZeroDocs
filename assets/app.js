@@ -700,25 +700,25 @@ document.addEventListener('keydown', e => {
 
 /* ── Tabs (delegated, synced by label) ───────────────────────────────────── */
 document.addEventListener('click', e => {
-  const btn = e.target.closest('.gb-tab-btn');
+  const btn = e.target.closest('.md-tab-btn');
   if (!btn) return;
   const label = btn.getAttribute('data-tab-label') || '';
   activateTab(btn);
   if (!label) return;
   store.set(`docs:tab:${label}`, '1');
   /* sync every other tab group that has a same-labeled button */
-  document.querySelectorAll('.gb-tabs').forEach(group => {
-    if (group === btn.closest('.gb-tabs')) return;
-    const twin = [...group.querySelectorAll('.gb-tab-btn')].find(b => b.getAttribute('data-tab-label') === label);
+  document.querySelectorAll('.md-tabs').forEach(group => {
+    if (group === btn.closest('.md-tabs')) return;
+    const twin = [...group.querySelectorAll('.md-tab-btn')].find(b => b.getAttribute('data-tab-label') === label);
     if (twin) activateTab(twin);
   });
 });
 
 function activateTab(btn) {
-  const group = btn.closest('.gb-tabs');
+  const group = btn.closest('.md-tabs');
   if (!group) return;
-  const buttons = [...group.querySelectorAll(':scope > .gb-tabs-nav > .gb-tab-btn')];
-  const panes = [...group.querySelectorAll(':scope > .gb-tabs-body > .gb-tab-pane')];
+  const buttons = [...group.querySelectorAll(':scope > .md-tabs-nav > .md-tab-btn')];
+  const panes = [...group.querySelectorAll(':scope > .md-tabs-body > .md-tab-pane')];
   const idx = Number(btn.getAttribute('data-tab-idx')) || buttons.indexOf(btn);
   buttons.forEach(b => b.classList.toggle('active', b === btn));
   panes.forEach((p, i) => p.classList.toggle('active', i === idx));
@@ -726,8 +726,8 @@ function activateTab(btn) {
 
 /** Re-apply remembered tab choices after a page renders. */
 function applySavedTabs(root) {
-  root.querySelectorAll('.gb-tabs').forEach(group => {
-    const buttons = [...group.querySelectorAll('.gb-tab-btn')];
+  root.querySelectorAll('.md-tabs').forEach(group => {
+    const buttons = [...group.querySelectorAll('.md-tab-btn')];
     const saved = buttons.find(b => store.get(`docs:tab:${b.getAttribute('data-tab-label')}`) === '1');
     if (saved && !saved.classList.contains('active')) activateTab(saved);
   });

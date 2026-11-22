@@ -136,7 +136,7 @@ const renders = s => { try { return md(s); } catch (e) { return 'THREW ' + e.mes
 const callouts = h => (h.match(/<blockquote class="c/g) || []).length;
 ok('hint inside steps', (h => callouts(h) === 1 && h.includes('md-steps') && !h.includes(':::'))(
   renders(':::steps\n## One\n:::hint type="warning"\nCareful\n:::\nafter\n---\n## Two\n:::\n')));
-ok('tabs inside steps, hint inside tab', (h => callouts(h) === 1 && h.includes('gb-tab-pane') && h.includes('b body') && !h.includes(':::'))(
+ok('tabs inside steps, hint inside tab', (h => callouts(h) === 1 && h.includes('md-tab-pane') && h.includes('b body') && !h.includes(':::'))(
   renders(':::steps\n## One\n:::tabs\n[A]\n:::hint\nin tab\n:::\n---\n[B]\nb body\n:::endtabs\n---\n## Two\n:::\n')));
 ok('hint and embed inside expand', (h => callouts(h) === 1 && h.includes('youtube.com/embed') && h.includes('tail</p></div></details>'))(
   renders(':::expand More\n:::hint\nx\n:::\n:::embed https://youtu.be/dQw4w9WgXcQ\n:::\ntail\n:::\n')));
@@ -147,10 +147,10 @@ ok('cardrow still holds its cards', (h => (h.match(/class="md-card"/g) || []).le
   renders(':::cardrow\n:::card\na\n:::\n:::card\nb\n:::\n:::endrow\n')));
 
 // ── {% %} tags with extra attributes ────────────────────────────────────────
-ok('{% %} tabs/tab/hint with extra attrs', (h => h.includes('gb-tabs') && h.includes('data-tab-label="A"') && h.includes('class="cw"') && !h.includes('{%'))(
+ok('{% %} tabs/tab/hint with extra attrs', (h => h.includes('md-tabs') && h.includes('data-tab-label="A"') && h.includes('class="cw"') && !h.includes('{%'))(
   renders('{% tabs fullWidth="false" %}\n{% tab title="A" extra %}\n{% hint style="warning" extra %}\nw\n{% endhint %}\n{% endtab %}\n{% endtabs %}\n')));
 ok('{% %} embed with extra attrs', renders('{% embed url="https://youtu.be/dQw4w9WgXcQ" fullWidth="false" %}\n').includes('youtube.com/embed'));
-ok('bare embed does not swallow up to a later endembed', (h => h.includes('text between') && (h.match(/gb-embed-link/g) || []).length === 2)(
+ok('bare embed does not swallow up to a later endembed', (h => h.includes('text between') && (h.match(/md-embed-link/g) || []).length === 2)(
   renders('{% embed url="https://a.example" %}\n\ntext between\n\n{% embed url="https://b.example" %}\ncaption\n{% endembed %}\n')));
 
 // ── buildNav sanitizes _meta hrefs (unit, with a temp site) ─────────────────
