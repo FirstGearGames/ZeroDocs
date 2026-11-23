@@ -13,10 +13,10 @@
     "build:example": "node build-static.js ./example-site",
     "build:pdf": "node build-pdf.js",
     "build:pdf:example": "node build-pdf.js ./example-site",
-    "test": "node test/security-test.js && node test/pdf-test.js && node test/site-test.js"
+    "test": "node test/security-test.js && node test/pdf-test.js && node test/site-test.js && node test/browser-test.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "dependencies": {},
   "private": false

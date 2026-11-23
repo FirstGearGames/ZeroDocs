@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Security regression suite
         run: node test/security-test.js
       - name: Build the live demo (example-site) under the project sub-path

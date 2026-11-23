@@ -14,12 +14,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Security regression suite
         run: node test/security-test.js
       - name: Static build (example site)
         run: node build-static.js ./example-site
       - name: Live site suite (static build and preview server over HTTP)
         run: node test/site-test.js
+      - name: Browser suite (headless Chrome, client features)
+        run: node test/browser-test.js
       - name: Content tripwire (advisory)
         run: node scripts/content-scan.js ./example-site

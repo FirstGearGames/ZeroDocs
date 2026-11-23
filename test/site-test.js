@@ -13,8 +13,8 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const http = require('http');
 const { execFileSync } = require('child_process');
+const { serveStatic } = require('./serve');
 
 const ENGINE = path.join(__dirname, '..');
 const EXAMPLE = path.join(ENGINE, 'example-site');
@@ -22,23 +22,6 @@ const EXAMPLE = path.join(ENGINE, 'example-site');
 let pass = 0;
 const failures = [];
 const ok = (name, cond) => { if (cond) pass++; else failures.push(name); };
-
-/** A plain static file server over the build output, the way a static host serves it. */
-function serveStatic(root) {
-  const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.xml': 'application/xml', '.txt': 'text/plain', '.md': 'text/markdown' };
-  const server = http.createServer((req, res) => {
-    let file = path.join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname));
-    if (!file.startsWith(root)) { res.writeHead(403); return res.end(); }
-    if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
-    if (!fs.existsSync(file)) {
-      res.writeHead(404, { 'Content-Type': 'text/html' });
-      return res.end(fs.readFileSync(path.join(root, '404.html')));
-    }
-    res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream' });
-    res.end(fs.readFileSync(file));
-  });
-  return new Promise(resolve => server.listen(0, '127.0.0.1', () => resolve(server)));
-}
 
 const get = async (server, urlPath) => {
   const r = await fetch(`http://127.0.0.1:${server.address().port}${urlPath}`, { redirect: 'manual' });

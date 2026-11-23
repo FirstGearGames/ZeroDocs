@@ -157,7 +157,12 @@ function drawNav() {
 }
 $('navfilter').addEventListener('input', drawNav);
 $('navfilter').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { const first = $('navtree').querySelector('a.ni'); if (first) first.click(); }
+  if (e.key === 'Enter') {
+    // The first page whose own title matches, not a folder kept only because it holds one.
+    const q = e.target.value.trim().toLowerCase();
+    const first = [...$('navtree').querySelectorAll('a.ni')].find(a => a.querySelector('.ni-label').textContent.toLowerCase().includes(q));
+    if (first) first.click();
+  }
   if (e.key === 'Escape') { e.stopPropagation(); e.target.value = ''; drawNav(); }
 });
 

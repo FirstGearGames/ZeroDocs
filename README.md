@@ -13,11 +13,11 @@ link, so anyone can propose a change without cloning anything. See
 [Hosting on Cloudflare Pages](#hosting-on-cloudflare-pages-with-github-editing).
 
 **Or run it entirely offline.** Because it has **zero dependencies** (Node.js
-built-ins only, no `npm install`) and the pages make **zero external requests**
-(no CDN scripts, no web fonts), the same software also runs as a local preview
-server or builds a fully self-contained static site. It works on a plane, and
-a static build keeps every page a reader opens, so it opens again with no
-connection at all.
+built-ins only, Node.js 22 or later, no `npm install`) and the pages make
+**zero external requests** (no CDN scripts, no web fonts), the same software
+also runs as a local preview server or builds a fully self-contained static
+site. It works on a plane, and a static build keeps every page a reader opens,
+so it opens again with no connection at all.
 
 **See it live: https://firstgeargames.github.io/ZeroDocs/** is the **Authoring
 Guide**, a page-by-page tour of every feature with source and rendered output
@@ -218,6 +218,8 @@ documented in [SECURITY.md](SECURITY.md).
 | `lib/` | The engine: site, markdown, directives, `{% %}` tag import, highlight, content, navigation, search, shell, server, util. |
 | `assets/app.css` / `assets/app.js` | The client (served with ETags; live and static modes). |
 | `test/security-test.js` | The security regression suite (`npm test`). |
+| `test/site-test.js` | Builds the example site and fetches it over HTTP, plus the preview server. |
+| `test/browser-test.js` | Drives the Chrome or Edge already installed, headless, through every client feature; skipped when neither is found (`CHROME_PATH` points at one). |
 | `scripts/content-scan.js` | Advisory content tripwire for reviewers. |
 | `docs.config.example.json` | Annotated config template for a new site. |
 | `AUTHORING.md` | Content reference, every frontmatter key and directive. |
