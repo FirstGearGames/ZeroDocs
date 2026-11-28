@@ -79,6 +79,14 @@ ok('single logo unchanged', shellWith({ logo: '/l.png' }).includes('<img class="
 ok('logoStyle applies to both theme logos', (shellWith({ logo: '/l.png', logoDark: '/d.png', logoStyle: { radius: 8 } }).match(/style="border-radius:8px;"/g) || []).length === 2);
 ok('shipped png favicon linked as png', shellWith({}, 'favicon.png').includes('<link rel="icon" href="/favicon.png" type="image/png"/>'));
 ok('generated favicon linked as svg', shellWith({}, null).includes('<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>'));
+{
+  const h = renderShell({ config: { versionLinks: [{ label: 'dev', url: 'https://dev.example.com/' }, { label: 'bad', url: 'javascript:alert(1)' }, { label: '', url: 'https://x.example.com' }] }, versions: ['v1'], page: null, assetsVer: '1' });
+  ok('version link renders as a menu entry', h.includes('<option value="link:0">dev</option>') && h.includes('"url":"https://dev.example.com"'));
+  const menu = (h.match(/<select[^>]*id="versel"[\s\S]*?<\/select>/) || [''])[0];
+  const links = JSON.stringify((JSON.parse((h.match(/window\.__DOCS__\s*=\s*(\{[\s\S]*?\});?\s*<\/script>/) || [, '{}'])[1]) || {}).versionLinks || null);
+  ok('version link with an unsafe scheme or no label is dropped', !menu.includes('link:1') && links === '[{"label":"dev","url":"https://dev.example.com"}]');
+  ok('one version plus a link shows the menu', !/id="versel"[^>]*display:none/.test(h));
+}
 ok('shell escapes site title', !renderShell({ config: { title: '</title><script>alert(1)</script>' }, versions: ['v1'], page: null, assetsVer: '1' }).includes('<script>alert(1)</script>'));
 ok('announcement inline links are escaped and scheme-checked', (h => !h.includes('<script>alert(1)</script>') && !h.includes('href="javascript:'))(
   renderShell({ config: { announcement: { text: '<script>alert(1)</script> [x](javascript:alert(1))' } }, versions: ['v1'], page: null, assetsVer: '1' })));

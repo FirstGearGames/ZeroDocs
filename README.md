@@ -240,6 +240,7 @@ documented in [SECURITY.md](SECURITY.md).
 | `logoDark` | Optional logo shown in the dark theme; `logo` is then shown only in the light theme. Follows the OS preference and the theme toggle. |
 | `versions` | Preferred display order of version folders. |
 | `defaultVersion` | The version `/` redirects to. |
+| `versionLinks` | Extra version-menu entries that open another deployment of the docs on the same page, such as a branch preview: `[{ "label": "dev", "url": "https://dev.example.pages.dev" }]`. On that deployment its entry shows as selected, and the other versions lead back to `url`. |
 | `github.repo` / `.branch` / `.contentDir` | Build "Edit this page" links, and a **Report an issue** button that opens a prefilled issue on the repo. Omit to hide them. |
 | `github.issues` | Where Report an issue goes when issues live elsewhere, e.g. `https://github.com/you/repo/issues/new`; enough for the button on its own. |
 | `nav` | Header links: `[{ "label": "…", "href": "…" }]`. Add `"button": true` to draw a link as a button. The static build writes the whole version as one Markdown file to `/static/downloads/latest.md` (and `<version>.md`); a nav link ending in `.md` downloads instead of opening. |

@@ -24,6 +24,10 @@ const STATIC = !!BOOT.staticMode;
 // stays base-less; base is added only at the boundaries (fetch URLs, anchor
 // hrefs, history) and stripped when reading the location back.
 const BASE = (BOOT.basePath || '').replace(/\/$/, '');
+/* Version-menu entries that are other deployments (a dev branch preview, say). On one of those,
+   its entry is what the menu shows, and the real versions lead back to the home site. */
+const LINKS = BOOT.versionLinks || [];
+const LINK_HERE = LINKS.findIndex(l => { try { return new URL(l.url).origin === location.origin; } catch { return false; } });
 const withBase = u => (typeof u === 'string' && u[0] === '/' && u[1] !== '/' && u !== BASE && !(BASE && u.startsWith(BASE + '/'))) ? BASE + u : u;
 const stripBase = p => (BASE && (p === BASE || p.startsWith(BASE + '/'))) ? (p.slice(BASE.length) || '/') : p;
 const api = {
@@ -106,7 +110,7 @@ function nav(href, push = true) {
   if (push) history.pushState({}, '', withBase(href));
   const versionChanged = target.version !== ver;
   ver = target.version;
-  $('versel').value = ver;
+  showVersion();
   if (versionChanged) { loadNav(ver); searchIdx = null; }
   loadPage(ver, target.slug, { hash: target.hash });
 }
@@ -304,6 +308,8 @@ const PA_ICONS = {
 };
 
 function renderPage(d, v, slug, opts = {}) {
+  /* Also reached without loadPage, when the server-rendered page is taken over. */
+  curSlug = slug;
   const siteTitle = CONFIG.title || 'Docs';
   document.title = `${d.title} | ${siteTitle}`;
   const metaDesc = document.querySelector('meta[name="description"]');
@@ -868,8 +874,15 @@ window.addEventListener('scroll', () => {
 $('btt').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 /* ── Version switcher (keeps the current page when it exists) ────────────── */
+function showVersion() { $('versel').value = LINK_HERE >= 0 ? `link:${LINK_HERE}` : ver; }
+
 $('versel').addEventListener('change', async e => {
   const v = e.target.value;
+  /* Read from the address bar: curSlug is unset until the first page has rendered. */
+  const slug = (parseDocsPath(location.pathname) || { slug: '' }).slug;
+  const page = slug ? `/${slug}` : '';
+  if (v.startsWith('link:')) { location.href = `${LINKS[+v.slice(5)].url}/docs/${ver}${page}`; return; }
+  if (LINK_HERE >= 0 && BOOT.homeUrl) { location.href = `${BOOT.homeUrl}/docs/${v}${page}`; return; }
   let target = `/docs/${v}`;
   if (curSlug) {
     try {
@@ -907,7 +920,7 @@ if (STATIC && 'serviceWorker' in navigator) {
 (async () => {
   const target = parseDocsPath(location.pathname + location.hash) || { version: ver, slug: '', hash: '' };
   ver = BOOT.versions.includes(target.version) ? target.version : ver;
-  $('versel').value = ver;
+  showVersion();
   await loadNav(ver);
   /* A page rendered into the HTML is taken over in place, not fetched again. */
   let rendered = null;
